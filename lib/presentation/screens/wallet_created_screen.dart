@@ -6,7 +6,10 @@ class WalletCreatedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('지갑 생성 완료')),
+      appBar: AppBar(
+        title: const Text('지갑 생성 완료'),
+        forceMaterialTransparency: true,
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

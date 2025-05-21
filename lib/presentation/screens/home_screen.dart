@@ -10,7 +10,10 @@ class HomeScreen extends StatelessWidget {
     final vm = context.read<WalletViewModel>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Eifty 지갑')),
+      appBar: AppBar(
+        title: const Text('홈 화면 예시'),
+        forceMaterialTransparency: true,
+      ),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
