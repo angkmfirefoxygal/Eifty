@@ -47,6 +47,13 @@ class WalletViewModel extends ChangeNotifier {
     return _generatedMnemonic!;
   }
 
+  /// 지갑 생성 중단
+  void discardTempWallet() {
+    _generatedMnemonic = null;
+    tempWalletName = null;
+    notifyListeners();
+  }
+
   /// 새 지갑 생성 및 저장
   Future<void> createAndSaveWallet(
     BuildContext context,

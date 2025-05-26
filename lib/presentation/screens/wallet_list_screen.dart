@@ -11,32 +11,97 @@ class WalletListScreen extends StatelessWidget {
     final vm = context.watch<WalletViewModel>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('지갑 목록')),
-      body:
-          vm.wallets.isEmpty
-              ? const Center(child: Text('저장된 지갑이 없습니다.'))
-              : ListView.separated(
-                itemCount: vm.wallets.length,
-                separatorBuilder: (_, __) => const Divider(),
-                itemBuilder: (context, index) {
-                  final wallet = vm.wallets[index];
-                  final isSelected =
-                      wallet.address == vm.selectedWallet?.address;
+      appBar: AppBar(
+        forceMaterialTransparency: true,
+        title: const Text('지갑 목록'),
+        centerTitle: true,
+        elevation: 0,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child:
+            vm.wallets.isEmpty
+                ? const Center(
+                  child: Text(
+                    '저장된 지갑이 없습니다.',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                )
+                : ListView.separated(
+                  itemCount: vm.wallets.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final wallet = vm.wallets[index];
+                    final isSelected =
+                        wallet.address == vm.selectedWallet?.address;
 
-                  return ListTile(
-                    title: Text(wallet.name),
-                    subtitle: Text(wallet.address),
-                    trailing:
-                        isSelected
-                            ? const Icon(Icons.check, color: Colors.green)
-                            : null,
-                    onTap: () => vm.selectWallet(wallet.address),
-                    onLongPress: () => _showDeleteDialog(context, vm, wallet),
-                  );
-                },
-              ),
+                    return GestureDetector(
+                      onTap: () => vm.selectWallet(wallet.address),
+                      onLongPress: () => _showDeleteDialog(context, vm, wallet),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color:
+                              isSelected ? Colors.grey.shade100 : Colors.white,
+                          border: Border.all(
+                            color:
+                                isSelected
+                                    ? Colors.green
+                                    : Colors.grey.shade300,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              wallet.name,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              wallet.address,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            if (isSelected)
+                              const Padding(
+                                padding: EdgeInsets.only(top: 8.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.check_circle,
+                                      size: 18,
+                                      color: Colors.green,
+                                    ),
+                                    SizedBox(width: 6),
+                                    Text(
+                                      '선택됨',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddWalletOptions(context),
+        shape: const CircleBorder(),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
     );
@@ -52,7 +117,7 @@ class WalletListScreen extends StatelessWidget {
       builder:
           (_) => AlertDialog(
             title: const Text('지갑 삭제'),
-            content: Text('${wallet.name} 지갑을 삭제하시겠습니까?'),
+            content: Text('"${wallet.name}" 지갑을 삭제하시겠습니까?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -72,17 +137,30 @@ class WalletListScreen extends StatelessWidget {
 
   void _showAddWalletOptions(BuildContext context) {
     showModalBottomSheet(
+      backgroundColor: Colors.white,
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder:
           (_) => Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade400,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
               ListTile(
                 leading: const Icon(Icons.add_box),
                 title: const Text('새 지갑 생성'),
                 onTap: () {
                   Navigator.pop(context);
-                  // Navigator.pushNamed(context, '/wallet/mnemonic');
                   _showNameInputDialog(context);
                 },
               ),
@@ -94,6 +172,7 @@ class WalletListScreen extends StatelessWidget {
                   Navigator.pushNamed(context, '/wallet/recover');
                 },
               ),
+              const SizedBox(height: 16),
             ],
           ),
     );
@@ -106,6 +185,7 @@ class WalletListScreen extends StatelessWidget {
       context: context,
       builder:
           (_) => AlertDialog(
+            backgroundColor: Colors.white,
             title: const Text('지갑 이름 설정'),
             content: TextField(
               controller: nameController,
@@ -121,8 +201,8 @@ class WalletListScreen extends StatelessWidget {
                   final name = nameController.text.trim();
                   if (name.isNotEmpty) {
                     context.read<WalletViewModel>().setTempWalletName(name);
-                    Navigator.pop(context); // 닫기
-                    Navigator.pushNamed(context, '/wallet/mnemonic'); // 다음 단계
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/wallet/mnemonic');
                   }
                 },
                 child: const Text('확인'),

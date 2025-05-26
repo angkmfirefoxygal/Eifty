@@ -69,7 +69,7 @@ class _WalletRecoveryScreenState extends State<WalletRecoveryScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(30),
         child: Column(
           children: [
             const Text(

@@ -80,7 +80,10 @@ class _WalletMnemonicConfirmScreenState
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('단어가 일치하지 않습니다. 다시 시도해주세요.')),
+          const SnackBar(
+            content: Text('단어가 일치하지 않습니다. 다시 시도해주세요.'),
+            duration: Duration(seconds: 1),
+          ),
         );
       }
     }
@@ -156,8 +159,15 @@ class _WalletMnemonicConfirmScreenState
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                          final vm = context.read<WalletViewModel>();
+                          vm.discardTempWallet(); // 생성 중인 지갑 정보 삭제
+
+                          Navigator.pop(context); // 다이얼로그 닫기
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            '/',
+                            (route) => false,
+                          ); // 홈으로 이동
                         },
                         child: const Text('나가기'),
                       ),
