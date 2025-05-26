@@ -3,13 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class WalletMnemonicScreen extends StatelessWidget {
+class WalletMnemonicScreen extends StatefulWidget {
   const WalletMnemonicScreen({super.key});
 
   @override
+  State<WalletMnemonicScreen> createState() => _WalletMnemonicScreenState();
+}
+
+class _WalletMnemonicScreenState extends State<WalletMnemonicScreen> {
+  String? mnemonic;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final vm = context.read<WalletViewModel>();
+      final generated = vm.generateAndReturnMnemonic();
+      setState(() {
+        mnemonic = generated;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final vm = context.watch<WalletViewModel>();
-    final mnemonicWords = vm.mnemonic?.split(' ') ?? [];
+    final mnemonicWords = mnemonic?.split(' ') ?? List.filled(12, '');
 
     return Scaffold(
       appBar: AppBar(
@@ -26,13 +44,13 @@ class WalletMnemonicScreen extends StatelessWidget {
                     content: const Text('지갑 생성을 중단하시겠어요?\n진행 중인 정보는 모두 삭제됩니다.'),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.pop(context), // 닫기
+                        onPressed: () => Navigator.pop(context),
                         child: const Text('계속 생성'),
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(context); // 모달 닫기
-                          Navigator.pop(context); // 이전 화면으로 이동
+                          Navigator.pop(context);
+                          Navigator.pop(context);
                         },
                         child: const Text('나가기'),
                       ),
@@ -48,24 +66,18 @@ class WalletMnemonicScreen extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            SizedBox(height: 15),
-            // 타이틀
-            Text(
+            const SizedBox(height: 15),
+            const Text(
               '생성된 니모닉 구절',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-
-            // 경고 텍스트
             const Text(
               '이 구절은 지갑 복구에 필수적입니다.\n반드시 백업해 두세요!',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.red, fontWeight: FontWeight.w500),
             ),
-
             const SizedBox(height: 20),
-
-            // 니모닉 1~12 라운드 박스
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
@@ -73,36 +85,20 @@ class WalletMnemonicScreen extends StatelessWidget {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _MnemonicItem(
-                        index: i + 1,
-                        word: mnemonicWords.length > i ? mnemonicWords[i] : '',
-                      ),
-                      _MnemonicItem(
-                        index: i + 7,
-                        word:
-                            mnemonicWords.length > i + 6
-                                ? mnemonicWords[i + 6]
-                                : '',
-                      ),
+                      _MnemonicItem(index: i + 1, word: mnemonicWords[i]),
+                      _MnemonicItem(index: i + 7, word: mnemonicWords[i + 6]),
                     ],
                   );
                 }),
               ),
             ),
-
             const SizedBox(height: 16),
-
-            // 클립보드 복사
             GestureDetector(
               onTap: () {
-                if (mnemonicWords.isNotEmpty) {
-                  Clipboard.setData(
-                    ClipboardData(text: mnemonicWords.join(' ')),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('클립보드에 복사되었습니다')),
-                  );
-                }
+                Clipboard.setData(ClipboardData(text: mnemonicWords.join(' ')));
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('클립보드에 복사되었습니다')));
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -113,116 +109,31 @@ class WalletMnemonicScreen extends StatelessWidget {
                 ],
               ),
             ),
-
             const Spacer(),
-
-            // 확인 버튼
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    MnemonicWarningDialog(context);
-                  },
+                  onPressed:
+                      mnemonic == null
+                          ? null
+                          : () async {
+                            final vm = context.read<WalletViewModel>();
+                            await vm.createAndSaveWallet(context, mnemonic!);
+                          },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.shade300,
-                    foregroundColor: Colors.black87,
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
                     minimumSize: const Size.fromHeight(48),
                   ),
-                  child: const Text('확인'),
+                  child: const Text('지갑 생성 완료'),
                 ),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Future<dynamic> MnemonicWarningDialog(BuildContext context) {
-    return showDialog(
-      context: context,
-      barrierDismissible: true, // 바깥 터치 시 닫힘
-      builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 12),
-                    const Icon(
-                      Icons.warning_amber_rounded,
-                      color: Colors.red,
-                      size: 40,
-                    ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      '니모닉 구절을 분실하면\n지갑을 복구할 수 없습니다!',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('• 니모닉을 외부에 저장하지 마세요.'),
-                          Text('• 다른 사람과 니모닉을 공유하지 마세요.'),
-                          Text('• 니모닉은 오프라인 환경에 기록해 두는 것을 권장합니다.'),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          Navigator.pop(context); // 모달 닫기
-
-                          final vm = context.read<WalletViewModel>();
-                          await vm.createAndSaveWallet(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size.fromHeight(48),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text('확인'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // 닫기 버튼 (X)
-              Positioned(
-                top: 8,
-                right: 8,
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

@@ -7,21 +7,37 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.read<WalletViewModel>();
+    final vm = context.watch<WalletViewModel>();
+    final wallet = vm.selectedWallet;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('홈 화면 예시'),
+        title: const Text('내 지갑 홈'),
         forceMaterialTransparency: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_balance_wallet),
+            onPressed: () => Navigator.pushNamed(context, '/wallet/list'),
+          ),
+        ],
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            vm.generateMnemonic(); // 니모닉 먼저 생성
-            Navigator.pushNamed(context, '/wallet/mnemonic'); // 니모닉 확인 화면으로 이동
-          },
-          child: const Text('지갑 생성하기'),
-        ),
+        child:
+            wallet == null
+                ? const Text('선택된 지갑이 없습니다.')
+                : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('선택된 지갑', style: TextStyle(fontSize: 16)),
+                    const SizedBox(height: 8),
+                    Text(
+                      '이름: ${wallet.name}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4),
+                    Text('주소: ${wallet.address}', textAlign: TextAlign.center),
+                  ],
+                ),
       ),
     );
   }

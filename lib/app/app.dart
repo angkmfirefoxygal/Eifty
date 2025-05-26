@@ -1,6 +1,8 @@
 import 'package:eifty/presentation/screens/home_screen.dart';
+import 'package:eifty/presentation/screens/wallet_list_screen.dart';
 import 'package:eifty/presentation/screens/wallet_created_screen.dart';
 import 'package:eifty/view/wallet/wallet_mnemonic_screen.dart';
+import 'package:eifty/view/wallet/wallet_recovery_screen.dart';
 import 'package:eifty/viewmodels/wallet_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,8 +12,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => WalletViewModel())],
+    return ChangeNotifierProvider(
+      create: (_) => WalletViewModel()..loadWallets(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Eifty',
@@ -24,6 +26,8 @@ class MyApp extends StatelessWidget {
           '/': (context) => const HomeScreen(),
           '/wallet/mnemonic': (context) => const WalletMnemonicScreen(),
           '/wallet/created': (context) => const WalletCreatedScreen(),
+          '/wallet/recover': (context) => const WalletRecoveryScreen(),
+          '/wallet/list': (context) => const WalletListScreen(),
         },
       ),
     );
