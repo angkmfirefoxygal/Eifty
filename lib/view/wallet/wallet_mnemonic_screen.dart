@@ -124,13 +124,15 @@ class _WalletMnemonicScreenState extends State<WalletMnemonicScreen> {
                           : () async {
                             final vm = context.read<WalletViewModel>();
                             await vm.createAndSaveWallet(context, mnemonic!);
+                            Navigator.pushNamed(context, '/wallet/confirm');
                           },
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
                     minimumSize: const Size.fromHeight(48),
                   ),
-                  child: const Text('지갑 생성 완료'),
+                  child: const Text('니모닉 확인하기'),
                 ),
               ),
             ),

@@ -40,6 +40,33 @@ class _WalletRecoveryScreenState extends State<WalletRecoveryScreen> {
       appBar: AppBar(
         title: const Text('지갑 복구'),
         forceMaterialTransparency: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder:
+                  (_) => AlertDialog(
+                    backgroundColor: Colors.white,
+                    title: const Text('지갑 복구 취소'),
+                    content: const Text('지갑 복구를 중단하시겠어요?\n진행 중인 정보는 모두 삭제됩니다.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('계속 복구'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        child: const Text('나가기'),
+                      ),
+                    ],
+                  ),
+            );
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
