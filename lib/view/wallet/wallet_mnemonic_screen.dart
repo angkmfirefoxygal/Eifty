@@ -96,9 +96,12 @@ class _WalletMnemonicScreenState extends State<WalletMnemonicScreen> {
             GestureDetector(
               onTap: () {
                 Clipboard.setData(ClipboardData(text: mnemonicWords.join(' ')));
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text('클립보드에 복사되었습니다')));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('클립보드에 복사되었습니다'),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -77,9 +77,9 @@ class WalletViewModel extends ChangeNotifier {
         ),
       );
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('지갑 생성 실패: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('지갑 생성 실패: $e'), duration: Duration(seconds: 1)),
+      );
     } finally {
       isLoading = false;
       notifyListeners();
@@ -92,9 +92,12 @@ class WalletViewModel extends ChangeNotifier {
     String mnemonicInput,
   ) async {
     if (mnemonicInput.trim().split(' ').length != 12) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('12개의 니모닉 단어를 정확히 입력해주세요.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('12개의 니모닉 단어를 정확히 입력해주세요.'),
+          duration: Duration(seconds: 1),
+        ),
+      );
       return;
     }
 
@@ -120,9 +123,9 @@ class WalletViewModel extends ChangeNotifier {
         ),
       );
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('복구 실패: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('복구 실패: $e'), duration: Duration(seconds: 1)),
+      );
     }
   }
 
