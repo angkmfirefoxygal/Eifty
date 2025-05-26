@@ -32,6 +32,14 @@ class WalletViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 지갑 이름 설정
+  String? tempWalletName;
+
+  void setTempWalletName(String name) {
+    tempWalletName = name;
+    notifyListeners();
+  }
+
   /// 니모닉 생성 및 반환
   String generateAndReturnMnemonic() {
     _generatedMnemonic = WalletService.generateMnemonic();
@@ -52,7 +60,7 @@ class WalletViewModel extends ChangeNotifier {
         mnemonic,
       );
       final newWallet = WalletModel(
-        name: '지갑 ${_wallets.length + 1}',
+        name: tempWalletName ?? '지갑 ${_wallets.length + 1}',
         address: walletData['address']!,
         privateKey: walletData['privateKey']!,
         createdAt: DateTime.now(),

@@ -82,7 +82,8 @@ class WalletListScreen extends StatelessWidget {
                 title: const Text('새 지갑 생성'),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/wallet/mnemonic');
+                  // Navigator.pushNamed(context, '/wallet/mnemonic');
+                  _showNameInputDialog(context);
                 },
               ),
               ListTile(
@@ -92,6 +93,39 @@ class WalletListScreen extends StatelessWidget {
                   Navigator.pop(context);
                   Navigator.pushNamed(context, '/wallet/recover');
                 },
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _showNameInputDialog(BuildContext context) {
+    final TextEditingController nameController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: const Text('지갑 이름 설정'),
+            content: TextField(
+              controller: nameController,
+              decoration: const InputDecoration(hintText: '예: 내 첫 번째 지갑'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('취소'),
+              ),
+              TextButton(
+                onPressed: () {
+                  final name = nameController.text.trim();
+                  if (name.isNotEmpty) {
+                    context.read<WalletViewModel>().setTempWalletName(name);
+                    Navigator.pop(context); // 닫기
+                    Navigator.pushNamed(context, '/wallet/mnemonic'); // 다음 단계
+                  }
+                },
+                child: const Text('확인'),
               ),
             ],
           ),
