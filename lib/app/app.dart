@@ -1,6 +1,7 @@
 import 'package:eifty/presentation/screens/home_screen.dart';
 import 'package:eifty/presentation/screens/wallet_list_screen.dart';
 import 'package:eifty/presentation/screens/wallet_created_screen.dart';
+import 'package:eifty/view/wallet/main_screen.dart';
 import 'package:eifty/view/wallet/wallet_mnemonic_confirm_screen.dart';
 import 'package:eifty/view/wallet/wallet_mnemonic_screen.dart';
 import 'package:eifty/view/wallet/wallet_recovery_screen.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
           '/wallet/created': (context) => const WalletCreatedScreen(),
           '/wallet/recover': (context) => const WalletRecoveryScreen(),
           '/wallet/list': (context) => const WalletListScreen(),
+          '/main': (context) => const MainScreen(),
         },
       ),
     );
