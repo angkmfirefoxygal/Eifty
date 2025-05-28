@@ -147,7 +147,7 @@ class _MnemonicItem extends StatelessWidget {
   final int index;
   final String word;
 
-  const _MnemonicItem({super.key, required this.index, required this.word});
+  const _MnemonicItem({required this.index, required this.word});
 
   @override
   Widget build(BuildContext context) {
