@@ -36,6 +36,7 @@ class _WalletRecoveryScreenState extends State<WalletRecoveryScreen> {
     final isFilled = _isMnemonicFilled();
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('지갑 복구'),
         forceMaterialTransparency: true,
@@ -67,17 +68,17 @@ class _WalletRecoveryScreenState extends State<WalletRecoveryScreen> {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(30),
-        child: Column(
-          children: [
-            const Text(
-              '니모닉 구절을 입력하세요',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: ListView(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(30),
+          child: Column(
+            children: [
+              const Text(
+                '니모닉 구절을 입력하세요',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              Column(
                 children: List.generate(6, (i) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,26 +106,31 @@ class _WalletRecoveryScreenState extends State<WalletRecoveryScreen> {
                   );
                 }),
               ),
-            ),
-            ElevatedButton(
-              onPressed:
-                  isFilled
-                      ? () {
-                        final mnemonic = _controllers
-                            .map((c) => c.text.trim())
-                            .join(' ');
-                        final vm = context.read<WalletViewModel>();
-                        vm.recoverWalletFromMnemonic(context, mnemonic);
-                      }
-                      : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isFilled ? Colors.black : Colors.grey.shade300,
-                foregroundColor: Colors.white,
-                minimumSize: const Size.fromHeight(48),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed:
+                      isFilled
+                          ? () {
+                            final mnemonic = _controllers
+                                .map((c) => c.text.trim())
+                                .join(' ');
+                            final vm = context.read<WalletViewModel>();
+                            vm.recoverWalletFromMnemonic(context, mnemonic);
+                          }
+                          : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        isFilled ? Colors.black : Colors.grey.shade300,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(48),
+                  ),
+                  child: const Text('복구하기'),
+                ),
               ),
-              child: const Text('복구하기'),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

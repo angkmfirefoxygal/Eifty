@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eifty/viewmodels/transaction_viewmodel.dart';
-import 'package:eifty/presentation/qr/qr_scan_screen.dart';
+import 'package:eifty/presentation/screens/qr/qr_scan_screen.dart';
 
 class SelectRecipientScreen extends StatefulWidget {
   const SelectRecipientScreen({super.key});
@@ -23,21 +23,11 @@ class _SelectRecipientScreenState extends State<SelectRecipientScreen> {
     context.read<TransactionViewModel>().setRecipientAddress(address);
   }
 
-  void _scanQRCode() async {
-    final scannedAddress = await Navigator.push(
+  void _scanQRCode() {
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const QRScanScreen()),
     );
-
-    if (scannedAddress != null && scannedAddress is String) {
-      if (scannedAddress.startsWith('0x') && scannedAddress.length == 42) {
-        _selectAddress(scannedAddress);
-      } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('유효한 지갑 주소가 아닙니다.')));
-      }
-    }
   }
 
   void _goNext() {

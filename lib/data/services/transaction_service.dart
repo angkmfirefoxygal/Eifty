@@ -57,7 +57,21 @@ class TransactionService {
     }
   }
 
-  void dispose() {
-    _ethClient.dispose();
+  static Future<double> getEthBalance(String address) async {
+    final httpClient = Client();
+    final ethClient = Web3Client(rpcUrl, httpClient);
+
+    try {
+      final ethAddress = EthereumAddress.fromHex(address);
+      final balance = await ethClient.getBalance(ethAddress);
+
+      // balance.getValueInUnit returns ETH
+      return balance.getValueInUnit(EtherUnit.ether);
+    } catch (e) {
+      print('잔액 조회 에러: $e');
+      return 0.0;
+    } finally {
+      ethClient.dispose();
+    }
   }
 }

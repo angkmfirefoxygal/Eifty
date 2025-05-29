@@ -1,10 +1,11 @@
 import 'package:eifty/presentation/screens/home_screen.dart';
 import 'package:eifty/presentation/screens/send/input_amount_screen.dart';
 import 'package:eifty/presentation/screens/wallet_list_screen.dart';
-import 'package:eifty/presentation/screens/wallet_created_screen.dart';
-import 'package:eifty/view/wallet/wallet_mnemonic_confirm_screen.dart';
-import 'package:eifty/view/wallet/wallet_mnemonic_screen.dart';
-import 'package:eifty/view/wallet/wallet_recovery_screen.dart';
+import 'package:eifty/presentation/screens/create_wallet/wallet_created_screen.dart';
+import 'package:eifty/presentation/screens/wallet_main_screen.dart';
+import 'package:eifty/presentation/screens/create_wallet/wallet_mnemonic_confirm_screen.dart';
+import 'package:eifty/presentation/screens/create_wallet/wallet_mnemonic_screen.dart';
+import 'package:eifty/presentation/screens/create_wallet/wallet_recovery_screen.dart';
 import 'package:flutter/material.dart';
 //transaction 관련 import
 import 'package:eifty/presentation/screens/send/select_recipient_screen.dart';
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
         '/wallet/created': (context) => const WalletCreatedScreen(),
         '/wallet/recover': (context) => const WalletRecoveryScreen(),
         '/wallet/list': (context) => const WalletListScreen(),
+
+        // 메인 화면
+        '/wallet/main': (context) => const WalletMainScreen(),
 
         // 트랜잭션 관련
         '/send/select-recipient': (context) => const SelectRecipientScreen(),
