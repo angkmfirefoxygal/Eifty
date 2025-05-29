@@ -31,19 +31,20 @@
 
 #### 1. 수신자 선택 화면 (주소 입력 or QR 스캔)
 
-![Select Recipient Screen](assets/screens/select_recipient.png)
+![Select Recipient Screen](assets/screens/SelectRecipient.png)
 
 #### 2. 이체 금액 입력 화면
 
-![Input Amount Screen](assets/screens/input_amount.png)
+![Input Amount Screen](assets/screens/InputAmountScreen.png)
 
 #### 3. 전송 확인 화면
 
-![Confirm Transaction Screen](assets/screens/confirm_transaction.png)
+![Confirm Transaction Screen](assets/screens/ConfirmTransactionScreen.png)
+
 
 #### 4. QR 코드 받기 화면 (탭 형태)
 
-![Receive QR Screen](assets/screens/receive_qr_tab.png)
+![Receive QR Screen](assets/screens/ReceiveQrScreen.png)
 
 
 ### 🧱 사용된 기술 스택
