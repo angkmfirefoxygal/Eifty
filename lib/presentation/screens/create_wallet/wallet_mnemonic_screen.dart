@@ -30,6 +30,7 @@ class _WalletMnemonicScreenState extends State<WalletMnemonicScreen> {
     final mnemonicWords = mnemonic?.split(' ') ?? List.filled(12, '');
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('니모닉 생성'),
         leading: IconButton(
@@ -62,81 +63,87 @@ class _WalletMnemonicScreenState extends State<WalletMnemonicScreen> {
         elevation: 0,
         forceMaterialTransparency: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 15),
-            const Text(
-              '생성된 니모닉 구절',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              '이 구절은 지갑 복구에 필수적입니다.\n반드시 백업해 두세요!',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: List.generate(6, (i) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _MnemonicItem(index: i + 1, word: mnemonicWords[i]),
-                      _MnemonicItem(index: i + 7, word: mnemonicWords[i + 6]),
-                    ],
-                  );
-                }),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Column(
+            children: [
+              const SizedBox(height: 15),
+              const Text(
+                '생성된 니모닉 구절',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-            ),
-            const SizedBox(height: 16),
-            GestureDetector(
-              onTap: () {
-                Clipboard.setData(ClipboardData(text: mnemonicWords.join(' ')));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('클립보드에 복사되었습니다'),
-                    duration: Duration(seconds: 1),
-                  ),
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.copy, size: 18),
-                  SizedBox(width: 6),
-                  Text('클립보드에 복사'),
-                ],
-              ),
-            ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed:
-                      mnemonic == null
-                          ? null
-                          : () async {
-                            final vm = context.read<WalletViewModel>();
-                            await vm.createAndSaveWallet(context, mnemonic!);
-                            Navigator.pushNamed(context, '/wallet/confirm');
-                          },
-
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(48),
-                  ),
-                  child: const Text('니모닉 확인하기'),
+              const SizedBox(height: 12),
+              const Text(
+                '이 구절은 지갑 복구에 필수적입니다.\n반드시 백업해 두세요!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Column(
+                  children: List.generate(6, (i) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _MnemonicItem(index: i + 1, word: mnemonicWords[i]),
+                        _MnemonicItem(index: i + 7, word: mnemonicWords[i + 6]),
+                      ],
+                    );
+                  }),
+                ),
+              ),
+              const SizedBox(height: 16),
+              GestureDetector(
+                onTap: () {
+                  Clipboard.setData(
+                    ClipboardData(text: mnemonicWords.join(' ')),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('클립보드에 복사되었습니다'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.copy, size: 18),
+                    SizedBox(width: 6),
+                    Text('클립보드에 복사'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 40), // ← Spacer 대체
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed:
+                        mnemonic == null
+                            ? null
+                            : () async {
+                              final vm = context.read<WalletViewModel>();
+                              await vm.createAndSaveWallet(context, mnemonic!);
+                              Navigator.pushNamed(context, '/wallet/confirm');
+                            },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                    child: const Text('니모닉 확인하기'),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

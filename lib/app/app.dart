@@ -1,11 +1,11 @@
 import 'package:eifty/presentation/screens/home_screen.dart';
 import 'package:eifty/presentation/screens/send/input_amount_screen.dart';
 import 'package:eifty/presentation/screens/wallet_list_screen.dart';
-import 'package:eifty/presentation/screens/wallet_created_screen.dart';
+import 'package:eifty/presentation/screens/create_wallet/wallet_created_screen.dart';
 import 'package:eifty/presentation/screens/wallet_main_screen.dart';
-import 'package:eifty/view/wallet/wallet_mnemonic_confirm_screen.dart';
-import 'package:eifty/view/wallet/wallet_mnemonic_screen.dart';
-import 'package:eifty/view/wallet/wallet_recovery_screen.dart';
+import 'package:eifty/presentation/screens/create_wallet/wallet_mnemonic_confirm_screen.dart';
+import 'package:eifty/presentation/screens/create_wallet/wallet_mnemonic_screen.dart';
+import 'package:eifty/presentation/screens/create_wallet/wallet_recovery_screen.dart';
 import 'package:flutter/material.dart';
 //transaction 관련 import
 import 'package:eifty/presentation/screens/send/select_recipient_screen.dart';
