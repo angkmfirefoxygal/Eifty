@@ -13,9 +13,9 @@ class ConfirmTransactionScreen extends StatelessWidget {
     if (!context.mounted) return;
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('✅ 전송 성공!\n해시: ${txVM.transactionHash}')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('✅ 전송 성공!')));
       Navigator.popUntil(context, ModalRoute.withName('/'));
     } else {
       ScaffoldMessenger.of(
