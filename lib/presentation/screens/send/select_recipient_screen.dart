@@ -23,21 +23,11 @@ class _SelectRecipientScreenState extends State<SelectRecipientScreen> {
     context.read<TransactionViewModel>().setRecipientAddress(address);
   }
 
-  void _scanQRCode() async {
-    final scannedAddress = await Navigator.push(
+  void _scanQRCode() {
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const QRScanScreen()),
     );
-
-    if (scannedAddress != null && scannedAddress is String) {
-      if (scannedAddress.startsWith('0x') && scannedAddress.length == 42) {
-        _selectAddress(scannedAddress);
-      } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('유효한 지갑 주소가 아닙니다.')));
-      }
-    }
   }
 
   void _goNext() {
