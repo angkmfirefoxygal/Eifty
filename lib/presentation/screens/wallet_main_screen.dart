@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:eifty/data/services/secure_storage_service.dart';
+import 'package:eifty/data/services/transaction_service.dart';
 
 class WalletMainScreen extends StatefulWidget {
   const WalletMainScreen({super.key});
@@ -10,25 +12,36 @@ class WalletMainScreen extends StatefulWidget {
 }
 
 class _WalletMainScreenState extends State<WalletMainScreen> {
-  double btcAmount = 0.0;
-  double btcPrice = 0.0;
+  double ethBalance = 0.0;
+  double ethPrice = 0.0;
 
   @override
   void initState() {
     super.initState();
-    fetchBTCPrice();
+    loadWalletBalance();
+    fetchETHPrice();
   }
 
-  Future<void> fetchBTCPrice() async {
+  Future<void> loadWalletBalance() async {
+    final address = await SecureStorageService.getSelectedWalletAddress();
+    if (address == null) return;
+
+    final balance = await TransactionService.getEthBalance(address);
+    setState(() {
+      ethBalance = balance;
+    });
+  }
+
+  Future<void> fetchETHPrice() async {
     final url = Uri.parse(
-      'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',
+      'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd',
     );
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
-          btcPrice = data['bitcoin']['usd'] ?? 0.0;
+          ethPrice = data['ethereum']['usd'] ?? 0.0;
         });
       } else {
         print('가격 로딩 실패: ${response.statusCode}');
@@ -38,7 +51,8 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
     }
   }
 
-  String get formattedPrice => '\$${(btcAmount * btcPrice).toStringAsFixed(2)}';
+  String get formattedPrice =>
+      '\$${(ethBalance * ethPrice).toStringAsFixed(2)}';
 
   void _send() {
     Navigator.pushNamed(context, '/send/select-recipient');
@@ -69,7 +83,7 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
             ),
             const SizedBox(height: 10),
             Text(
-              '${btcAmount.toStringAsFixed(4)} BTC',
+              '${ethBalance.toStringAsFixed(4)} ETH',
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Text(formattedPrice, style: const TextStyle(fontSize: 16)),
