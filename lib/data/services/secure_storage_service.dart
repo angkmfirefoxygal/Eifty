@@ -32,6 +32,15 @@ class SecureStorageService {
     return await _storage.read(key: _keySelected);
   }
 
+  /// 프라이빗 키 저장
+  static Future<void> savePrivateKey(String address, String privateKey) async {
+    await _storage.write(key: 'private_key_$address', value: privateKey);
+  }
+
+  static Future<String?> getPrivateKey(String address) async {
+    return await _storage.read(key: 'private_key_$address');
+  }
+
   /// 지갑 삭제
   static Future<void> deleteWallet(String address) async {
     final wallets = await loadWalletList();
