@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:eifty/data/services/secure_storage_service.dart';
 import 'package:eifty/models/wallet_model.dart';
 import 'package:eifty/data/services/wallet_service.dart';
-import 'package:eifty/presentation/screens/wallet_created_screen.dart';
+import 'package:eifty/presentation/screens/create_wallet/wallet_created_screen.dart';
 
 class WalletViewModel extends ChangeNotifier {
   List<WalletModel> _wallets = [];
