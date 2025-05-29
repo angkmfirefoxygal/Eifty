@@ -27,25 +27,22 @@
 
 ---
 
-### 🖼️ UI 미리보기
+## 🖼️ UI 미리보기
 
 #### 1. 수신자 선택 화면 (주소 입력 or QR 스캔)
-
-![Select Recipient Screen](assets/screens/SelectRecipient.png)
+![Select Recipient Screen](lib/assets/SelectRecipient.png)
 
 #### 2. 이체 금액 입력 화면
-
-![Input Amount Screen](assets/screens/InputAmountScreen.png)
+![Input Amount Screen](lib/assets/InputAmountScreen.png)
 
 #### 3. 전송 확인 화면
-
-![Confirm Transaction Screen](assets/screens/ConfirmTransactionScreen.png)
-
+![Confirm Transaction Screen](lib/assets/ConfirmTransactionScreen.png)
 
 #### 4. QR 코드 받기 화면 (탭 형태)
+![Receive QR Screen](lib/assets/ReceiveQrScreen.png)
 
-![Receive QR Screen](assets/screens/ReceiveQrScreen.png)
-
+#### 5. 지갑 홈 화면
+![Home Screen](lib/assets/HomeScreen.png)
 
 ### 🧱 사용된 기술 스택
 
