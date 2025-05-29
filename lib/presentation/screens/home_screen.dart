@@ -2,8 +2,25 @@ import 'package:eifty/viewmodels/wallet_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _isLoaded = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_isLoaded) {
+      context.read<WalletViewModel>().loadWallets();
+      _isLoaded = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,17 +33,13 @@ class HomeScreen extends StatelessWidget {
         title: const Text('내 지갑 홈'),
         centerTitle: true,
         elevation: 0,
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.account_balance_wallet_outlined),
-        //     onPressed: () => Navigator.pushNamed(context, '/wallet/list'),
-        //   ),
-        // ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(30),
         child:
-            wallet == null
+            vm.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : wallet == null
                 ? const Center(
                   child: Text(
                     '선택된 지갑이 없습니다.',
@@ -92,6 +105,49 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/send/select-recipient',
+                              );
+                            },
+                            icon: const Icon(Icons.send),
+                            label: const Text('보내기'),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              backgroundColor: Colors.blueGrey,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/receive/qr');
+                            },
+                            icon: const Icon(Icons.qr_code),
+                            label: const Text('받기'),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              backgroundColor: Colors.blueGrey,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

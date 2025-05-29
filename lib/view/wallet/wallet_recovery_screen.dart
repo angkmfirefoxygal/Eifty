@@ -1,4 +1,3 @@
-import 'package:bip39/bip39.dart' as bip39;
 import 'package:eifty/viewmodels/wallet_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
