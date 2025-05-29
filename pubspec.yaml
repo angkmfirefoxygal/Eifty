@@ -32,12 +32,13 @@ dependencies:
     sdk: flutter
   flutter_dotenv: ^5.2.1
   provider: ^6.1.5
-  web3dart: ^2.5.2
   bip39: ^1.0.4
   convert: ^3.1.1
   flutter_secure_storage: ^9.2.4
   web3dart: ^2.6.1
+  mobile_scanner: ^3.5.2  # 최신 버전은 pub.dev에서 확인
   http: ^0.13.6
+  qr_flutter: ^4.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
