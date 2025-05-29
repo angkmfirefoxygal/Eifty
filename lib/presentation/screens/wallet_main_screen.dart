@@ -26,7 +26,12 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
 
   Future<void> loadBalances() async {
     final address = await SecureStorageService.getSelectedWalletAddress();
-    if (address == null) return;
+    print('🔍 현재 선택된 지갑 주소: $address'); // ✅ 확인 로그
+
+    if (address == null) {
+      print('❌ 지갑 주소가 null입니다.');
+      return;
+    }
 
     final balance = await TransactionService.getPolBalance(address);
     final price = await fetchPrice('matic-network');
