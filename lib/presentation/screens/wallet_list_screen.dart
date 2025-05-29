@@ -20,7 +20,7 @@ class WalletListScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child:
-            vm.wallets.isEmpty
+            vm.uniqueWallets.isEmpty
                 ? const Center(
                   child: Text(
                     '저장된 지갑이 없습니다.',
@@ -28,10 +28,10 @@ class WalletListScreen extends StatelessWidget {
                   ),
                 )
                 : ListView.separated(
-                  itemCount: vm.wallets.length,
+                  itemCount: vm.uniqueWallets.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
-                    final wallet = vm.wallets[index];
+                    final wallet = vm.uniqueWallets[index];
                     final isSelected =
                         wallet.address == vm.selectedWallet?.address;
 
