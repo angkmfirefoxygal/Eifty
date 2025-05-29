@@ -127,6 +127,12 @@ class TransactionViewModel extends ChangeNotifier {
       if (privateKey == null) throw Exception('Private Key가 존재하지 않습니다.');
 
       final service = TransactionService();
+
+      await service.init(
+        rpcUrl: 'https://rpc-amoy.polygon.technology',
+        chainId: 80002,
+      );
+
       final hash = await service.sendToken(
         recipientAddress: recipientAddress!,
         amount: amount!,
