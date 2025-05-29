@@ -14,6 +14,7 @@ class WalletMainScreen extends StatefulWidget {
 class _WalletMainScreenState extends State<WalletMainScreen> {
   double polBalance = 0.0;
   double polPrice = 0.0;
+  bool isLoading = true;
 
   final Color iconColor = const Color(0xFF667C8A);
 
@@ -25,12 +26,24 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
 
   Future<void> loadBalances() async {
     final address = await SecureStorageService.getSelectedWalletAddress();
-    if (address == null) return;
+    print('🔍 현재 선택된 지갑 주소: $address'); // ✅ 확인 로그
 
-    polBalance = await TransactionService.getPolBalance(address);
-    polPrice = await fetchPrice('matic-network');
+    if (address == null) {
+      print('❌ 지갑 주소가 null입니다.');
+      return;
+    }
 
-    setState(() {});
+    final balance = await TransactionService.getPolBalance(address);
+    final price = await fetchPrice('matic-network');
+
+    print('POL balance: $balance');
+    print('POL price: $price');
+
+    setState(() {
+      polBalance = balance;
+      polPrice = price;
+      isLoading = false;
+    });
   }
 
   Future<double> fetchPrice(String coinId) async {
@@ -48,7 +61,6 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
   String get selectedSymbol => 'POL';
   double get selectedBalance => polBalance;
   double get selectedPrice => polPrice;
-
   String get formattedPrice =>
       '\$${(selectedBalance * selectedPrice).toStringAsFixed(2)}';
 
@@ -75,69 +87,78 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            const Text(
-              'POL',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const Text('Polygon', style: TextStyle(fontSize: 14)),
-            const SizedBox(height: 10),
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.grey.shade300,
-              child: Icon(
-                Icons.account_balance_wallet_outlined,
-                color: iconColor,
+      body:
+          isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SafeArea(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    const Text(
+                      'POL',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Text('Polygon', style: TextStyle(fontSize: 14)),
+                    const SizedBox(height: 10),
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.grey.shade300,
+                      child: Icon(
+                        Icons.account_balance_wallet_outlined,
+                        color: iconColor,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '${selectedBalance.toStringAsFixed(4)} $selectedSymbol',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(formattedPrice, style: const TextStyle(fontSize: 16)),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: _send,
+                          icon: Icon(Icons.arrow_upward, color: iconColor),
+                          label: const Text('전송'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey.shade200,
+                            foregroundColor: Colors.black,
+                            elevation: 0,
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        ElevatedButton.icon(
+                          onPressed: _receive,
+                          icon: Icon(Icons.arrow_downward, color: iconColor),
+                          label: const Text('수신'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey.shade200,
+                            foregroundColor: Colors.black,
+                            elevation: 0,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(height: 40),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          '트랜잭션이 표시됩니다.',
+                          style: TextStyle(color: Colors.grey.shade600),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              '${selectedBalance.toStringAsFixed(4)} $selectedSymbol',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            Text(formattedPrice, style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: _send,
-                  icon: Icon(Icons.arrow_upward, color: iconColor),
-                  label: const Text('전송'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.shade200,
-                    foregroundColor: Colors.black,
-                    elevation: 0,
-                  ),
-                ),
-                const SizedBox(width: 20),
-                ElevatedButton.icon(
-                  onPressed: _receive,
-                  icon: Icon(Icons.arrow_downward, color: iconColor),
-                  label: const Text('수신'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.shade200,
-                    foregroundColor: Colors.black,
-                    elevation: 0,
-                  ),
-                ),
-              ],
-            ),
-            const Divider(height: 40),
-            Expanded(
-              child: Center(
-                child: Text(
-                  '트랜잭션이 표시됩니다.',
-                  style: TextStyle(color: Colors.grey.shade600),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -58,7 +58,10 @@ class TransactionService {
   }
 
   static Future<double> getPolBalance(String address) async {
-    final polClient = Web3Client('https://polygon-rpc.com', Client());
+    final polClient = Web3Client(
+      'https://rpc-amoy.polygon.technology',
+      Client(),
+    );
 
     try {
       final ethAddress = EthereumAddress.fromHex(address);
