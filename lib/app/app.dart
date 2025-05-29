@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
 
       initialRoute: '/',
       routes: {
-        '/': (context) => const WalletMainScreen(),
+        '/': (context) => const HomeScreen(),
         '/wallet/mnemonic': (context) => const WalletMnemonicScreen(),
         '/wallet/confirm': (context) => const WalletMnemonicConfirmScreen(),
         '/wallet/created': (context) => const WalletCreatedScreen(),
