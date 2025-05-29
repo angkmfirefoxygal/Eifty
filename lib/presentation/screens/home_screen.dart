@@ -1,7 +1,6 @@
 import 'package:eifty/viewmodels/wallet_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:eifty/data/services/transaction_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -95,49 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                    const Spacer(),
-                    // ✅ 테스트 전송 버튼 추가
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          final service = TransactionService();
-                          await service.init();
-
-                          try {
-                            final txHash = await service.sendToken(
-                              recipientAddress:
-                                  '0x156f1aF64D4ca0Bc7cA5d903aAfB537A6763D88e', // 친구 테스트 주소
-                              amount: 0.01,
-                              tokenSymbol: 'POL',
-                            );
-
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('✅ 트랜잭션 성공!\n해시: $txHash'),
-                              ),
-                            );
-                          } catch (e) {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(SnackBar(content: Text('❌ 실패: $e')));
-                          } finally {
-                            service.dispose();
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text('🚀 테스트 전송'),
                       ),
                     ),
                     const Spacer(),
