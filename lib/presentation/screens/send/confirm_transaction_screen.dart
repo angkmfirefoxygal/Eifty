@@ -1,16 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eifty/viewmodels/transaction_viewmodel.dart';
+import 'package:eifty/data/services/transaction_service.dart';
 
 class ConfirmTransactionScreen extends StatelessWidget {
   const ConfirmTransactionScreen({super.key});
 
-  void _submitTransaction(BuildContext context) {
-    // TODO: 실제 트랜잭션 처리 로직 연결
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('트랜잭션 전송 완료!')));
-    Navigator.popUntil(context, ModalRoute.withName('/')); // 홈으로 이동
+  void _submitTransaction(BuildContext context) async {
+    final txVM = context.read<TransactionViewModel>();
+    final txService = TransactionService();
+    await txService.init();
+
+    try {
+      final txHash = await txService.sendToken(
+        recipientAddress: txVM.recipientAddress!,
+        amount: txVM.amount!,
+        tokenSymbol: txVM.selectedToken,
+      );
+
+      txVM.transactionHash = txHash;
+      txVM.reset();
+
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('✅ 전송 성공!\n해시: $txHash')));
+      Navigator.popUntil(context, ModalRoute.withName('/'));
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('❌ 전송 실패: $e')));
+    } finally {
+      txService.dispose();
+    }
   }
 
   @override
