@@ -16,9 +16,16 @@ class _InputAmountScreenState extends State<InputAmountScreen> {
   @override
   void initState() {
     super.initState();
-    final currentToken = context.read<TransactionViewModel>().selectedToken;
-    _amountController.text =
-        context.read<TransactionViewModel>().amount?.toString() ?? '';
+
+    final vm = context.read<TransactionViewModel>();
+
+    // 기존 값 세팅
+    _amountController.text = vm.amount?.toString() ?? '';
+
+    // 수수료 조회 실행
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      vm.fetchFeeEstimate();
+    });
   }
 
   void _goNext() {
@@ -56,7 +63,9 @@ class _InputAmountScreenState extends State<InputAmountScreen> {
               value: txVM.selectedToken,
               onChanged: (String? newToken) {
                 if (newToken != null) {
-                  context.read<TransactionViewModel>().setToken(newToken);
+                  final vm = context.read<TransactionViewModel>();
+                  vm.setToken(newToken);
+                  vm.fetchFeeEstimate();
                 }
               },
               items:
@@ -78,16 +87,32 @@ class _InputAmountScreenState extends State<InputAmountScreen> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
+              onChanged: (value) {
+                final vm = context.read<TransactionViewModel>();
+                final parsed = double.tryParse(value);
+                if (parsed != null) {
+                  vm.setAmount(parsed);
+                  vm.fetchFeeEstimate();
+                }
+              },
               decoration: InputDecoration(
                 suffixText: txVM.selectedToken,
                 border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 12),
-            Text(
-              '수수료: ${txVM.fee} ${txVM.selectedToken}',
-              style: const TextStyle(fontSize: 13, color: Colors.grey),
-            ),
+
+            // ✅ 수수료 텍스트 처리
+            txVM.isLoading
+                ? const Text(
+                  '수수료 계산 중...',
+                  style: TextStyle(fontSize: 13, color: Colors.grey),
+                )
+                : Text(
+                  '수수료: ${txVM.fee} ${txVM.selectedToken}',
+                  style: const TextStyle(fontSize: 13, color: Colors.grey),
+                ),
+
             const Spacer(),
             SizedBox(
               width: double.infinity,

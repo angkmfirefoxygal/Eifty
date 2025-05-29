@@ -12,6 +12,14 @@ class TransactionService {
     _chainId = chainId;
   }
 
+  // 가스비 조회
+  Future<double> estimateGasFee({int gasLimit = 21000}) async {
+    final gasPrice = await _ethClient.getGasPrice(); // Wei 단위
+    final feeInWei = gasPrice.getInWei * BigInt.from(gasLimit);
+    final feeInEther = feeInWei / BigInt.from(10).pow(18); // ETH 단위
+    return feeInEther.toDouble();
+  }
+
   Future<String> sendToken({
     required String recipientAddress,
     required double amount,

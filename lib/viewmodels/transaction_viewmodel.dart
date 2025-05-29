@@ -34,6 +34,34 @@ class TransactionViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 수수료 계산
+  Future<void> fetchFeeEstimate() async {
+    try {
+      isLoading = true;
+      notifyListeners();
+
+      final selectedAddress =
+          await SecureStorageService.getSelectedWalletAddress();
+      if (selectedAddress == null) throw Exception('선택된 지갑이 없습니다.');
+
+      final service = TransactionService();
+
+      await service.init(
+        rpcUrl: 'https://rpc-amoy.polygon.technology',
+        chainId: 80002,
+      );
+
+      final estimatedFee = await service.estimateGasFee(gasLimit: 21000);
+      fee = double.parse(estimatedFee.toStringAsFixed(6)); // 소수 6자리
+    } catch (e) {
+      debugPrint('수수료 계산 실패: $e');
+      fee = 0.0; // fallback
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
   /// 트랜잭션 실행
   Future<bool> sendTransaction() async {
     if (recipientAddress == null || amount == null) return false;
