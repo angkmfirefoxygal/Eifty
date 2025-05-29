@@ -27,25 +27,23 @@
 
 ---
 
-### 🖼️ UI 미리보기
+## 🖼️ UI 미리보기
 
-#### 1. 수신자 선택 화면 (주소 입력 or QR 스캔)
+<p align="center">
+  <img src="lib/assets/SelectRecipient.png" width="200" height="480" alt="수신자 선택"/>
+  <img src="lib/assets/InputAmountScreen.png" width="200" height="480" alt="이체 금액"/>
+  <img src="lib/assets/ConfirmTransactionScreen.png" width="200" height="480" alt="송금 확인"/>
+  <img src="lib/assets/ReceiveQrScreen.png" width="200" height="480" alt="QR 수신"/>
+</p>
 
-![Select Recipient Screen](assets/screens/SelectRecipient.png)
+<br/>
 
-#### 2. 이체 금액 입력 화면
-
-![Input Amount Screen](assets/screens/InputAmountScreen.png)
-
-#### 3. 전송 확인 화면
-
-![Confirm Transaction Screen](assets/screens/ConfirmTransactionScreen.png)
-
-
-#### 4. QR 코드 받기 화면 (탭 형태)
-
-![Receive QR Screen](assets/screens/ReceiveQrScreen.png)
-
+<p align="center">
+  <b>수신자 선택</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b>이체 금액</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b>전송 확인</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b>QR 수신</b>
+</p>
 
 ### 🧱 사용된 기술 스택
 
