@@ -30,10 +30,10 @@
 ## 🖼️ UI 미리보기
 
 <p align="center">
-  <img src="lib/assets/SelectRecipient.png" width="200" height="550" alt="수신자 선택"/>
-  <img src="lib/assets/InputAmountScreen.png" width="200" height="550" alt="이체 금액"/>
-  <img src="lib/assets/ConfirmTransactionScreen.png" width="200" height="550" alt="송금 확인"/>
-  <img src="lib/assets/ReceiveQrScreen.png" width="200" height="550" alt="QR 수신"/>
+  <img src="lib/assets/SelectRecipient.png" width="200" height="400" alt="수신자 선택"/>
+  <img src="lib/assets/InputAmountScreen.png" width="200" height="400" alt="이체 금액"/>
+  <img src="lib/assets/ConfirmTransactionScreen.png" width="200" height="400" alt="송금 확인"/>
+  <img src="lib/assets/ReceiveQrScreen.png" width="200" height="400" alt="QR 수신"/>
 </p>
 
 <br/>
