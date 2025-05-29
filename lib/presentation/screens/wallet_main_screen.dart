@@ -15,29 +15,29 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
   double polBalance = 0.0;
   double polPrice = 0.0;
   bool isLoading = true;
+  List<Map<String, dynamic>> transactions = [];
+  String? address;
 
   final Color iconColor = const Color(0xFF667C8A);
 
   @override
   void initState() {
     super.initState();
-    loadBalances();
+    loadWalletData();
   }
 
-  Future<void> loadBalances() async {
-    final address = await SecureStorageService.getSelectedWalletAddress();
-    print('🔍 현재 선택된 지갑 주소: $address'); // ✅ 확인 로그
-
+  Future<void> loadWalletData() async {
+    address = await SecureStorageService.getSelectedWalletAddress();
     if (address == null) {
       print('❌ 지갑 주소가 null입니다.');
       return;
     }
 
-    final balance = await TransactionService.getPolBalance(address);
-    final price = await fetchPrice('matic-network');
+    print('🔍 현재 선택된 지갑 주소: $address');
 
-    print('POL balance: $balance');
-    print('POL price: $price');
+    final balance = await TransactionService.getPolBalance(address!);
+    final price = await fetchPrice('matic-network');
+    await fetchTransactionHistory(address!);
 
     setState(() {
       polBalance = balance;
@@ -56,6 +56,28 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
       return (data[coinId]['usd'] ?? 0.0) as double;
     }
     return 0.0;
+  }
+
+  Future<void> fetchTransactionHistory(String address) async {
+    final url = Uri.parse(
+      'https://api-amoy.polygonscan.com/api?module=account&action=txlist'
+      '&address=$address&startblock=0&endblock=99999999&sort=desc',
+    );
+
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['status'] == '1') {
+        final result = data['result'] as List;
+        setState(() {
+          transactions = result.cast<Map<String, dynamic>>();
+        });
+      } else {
+        print('⚠️ 트랜잭션 없음');
+      }
+    } else {
+      print('❌ 트랜잭션 조회 실패');
+    }
   }
 
   String get selectedSymbol => 'POL';
@@ -149,12 +171,66 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
                     ),
                     const Divider(height: 40),
                     Expanded(
-                      child: Center(
-                        child: Text(
-                          '트랜잭션이 표시됩니다.',
-                          style: TextStyle(color: Colors.grey.shade600),
-                        ),
-                      ),
+                      child:
+                          transactions.isEmpty
+                              ? Center(
+                                child: Text(
+                                  '최근 트랜잭션이 없습니다.',
+                                  style: TextStyle(color: Colors.grey.shade600),
+                                ),
+                              )
+                              : ListView.builder(
+                                itemCount: transactions.length.clamp(0, 10),
+                                itemBuilder: (context, index) {
+                                  final tx = transactions[index];
+                                  final from =
+                                      tx['from'].toString().toLowerCase();
+                                  final to = tx['to'].toString().toLowerCase();
+                                  final isSend =
+                                      from == (address ?? '').toLowerCase();
+                                  final value =
+                                      BigInt.parse(tx['value']) /
+                                      BigInt.from(10).pow(18);
+                                  final time =
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                        int.parse(tx['timeStamp']) * 1000,
+                                      );
+
+                                  return ListTile(
+                                    leading: Icon(
+                                      isSend
+                                          ? Icons.arrow_upward
+                                          : Icons.arrow_downward,
+                                      color: isSend ? Colors.red : Colors.green,
+                                    ),
+                                    title: Text(isSend ? '보냄' : '받음'),
+                                    subtitle: Text(
+                                      isSend
+                                          ? 'To: ${to.substring(0, 8)}...'
+                                          : 'From: ${from.substring(0, 8)}...',
+                                    ),
+                                    trailing: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          '${value.toStringAsFixed(5)} POL',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${time.month}/${time.day} ${time.hour}:${time.minute.toString().padLeft(2, '0')}',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
                     ),
                   ],
                 ),
