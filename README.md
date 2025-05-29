@@ -37,10 +37,10 @@
 </p>
 
 <p align="center">
-  <b>수신자 선택   </b> &nbsp;&nbsp;&nbsp;&nbsp;
-  <b>이체 금액   </b> &nbsp;&nbsp;&nbsp;&nbsp;
-  <b>전송 확인   </b> &nbsp;&nbsp;&nbsp;&nbsp;
-  <b>QR 수신   </b>
+  <b>수신자 선택         </b> &nbsp;&nbsp;&nbsp;&nbsp;
+  <b>      이체 금액   </b> &nbsp;&nbsp;&nbsp;&nbsp;
+  <b>      전송 확인   </b> &nbsp;&nbsp;&nbsp;&nbsp;
+  <b>      QR 수신   </b>
 </p>
 
 ### 🧱 사용된 기술 스택
