@@ -1,7 +1,6 @@
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:web3dart/web3dart.dart';
 import 'package:convert/convert.dart';
-import 'dart:typed_data';
 
 class WalletService {
   /// 니모닉 12단어 생성

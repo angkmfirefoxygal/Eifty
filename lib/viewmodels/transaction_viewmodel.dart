@@ -42,7 +42,8 @@ class TransactionViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final hash = await TransactionService.sendToken(
+      final service = TransactionService(); // 👈 인스턴스 생성
+      final hash = await service.sendToken(
         recipientAddress: recipientAddress!,
         amount: amount!,
         tokenSymbol: selectedToken,
