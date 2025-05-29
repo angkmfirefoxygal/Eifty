@@ -23,6 +23,15 @@ class WalletService {
     final privateKey = seed.sublist(0, 32);
     final hexPrivateKey = hex.encode(privateKey);
 
+    /// 프라이빗 키 저장
+  static Future<void> savePrivateKey(String address, String privateKey) async {
+    await _storage.write(key: 'private_key_$address', value: privateKey);
+  }
+
+  static Future<String?> getPrivateKey(String address) async {
+    return await _storage.read(key: 'private_key_$address');
+  }
+
     // Web3dart 지갑 생성
     final credentials = EthPrivateKey.fromHex(hexPrivateKey);
     final address = await credentials.extractAddress();

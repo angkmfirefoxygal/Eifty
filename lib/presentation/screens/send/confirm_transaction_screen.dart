@@ -5,12 +5,23 @@ import 'package:eifty/viewmodels/transaction_viewmodel.dart';
 class ConfirmTransactionScreen extends StatelessWidget {
   const ConfirmTransactionScreen({super.key});
 
-  void _submitTransaction(BuildContext context) {
-    // TODO: 실제 트랜잭션 처리 로직 연결
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('트랜잭션 전송 완료!')));
-    Navigator.popUntil(context, ModalRoute.withName('/')); // 홈으로 이동
+  Future<void> _submitTransaction(BuildContext context) async {
+    final txVM = context.read<TransactionViewModel>();
+
+    final success = await txVM.sendTransaction();
+
+    if (!context.mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('✅ 전송 성공!\n해시: ${txVM.transactionHash}')),
+      );
+      Navigator.popUntil(context, ModalRoute.withName('/'));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('❌ 전송 실패')));
+    }
   }
 
   @override
@@ -51,7 +62,8 @@ class ConfirmTransactionScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => _submitTransaction(context),
+                onPressed:
+                    txVM.isLoading ? null : () => _submitTransaction(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
@@ -60,14 +72,24 @@ class ConfirmTransactionScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text('보내기'),
+                child:
+                    txVM.isLoading
+                        ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            color: Colors.white,
+                          ),
+                        )
+                        : const Text('보내기'),
               ),
             ),
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
               child: TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: txVM.isLoading ? null : () => Navigator.pop(context),
                 child: const Text('취소', style: TextStyle(color: Colors.black)),
               ),
             ),
