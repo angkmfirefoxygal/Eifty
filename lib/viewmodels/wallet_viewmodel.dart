@@ -178,7 +178,22 @@ class WalletViewModel extends ChangeNotifier {
   /// 삭제
   Future<void> deleteWallet(String address) async {
     await SecureStorageService.deleteWallet(address);
-    await loadWallets();
+
+    // 상태 반영
+    _wallets = await SecureStorageService.loadWalletList();
+
+    final selectedAddress =
+        await SecureStorageService.getSelectedWalletAddress();
+    if (_wallets.isEmpty) {
+      _selectedWallet = null;
+    } else {
+      _selectedWallet = _wallets.firstWhere(
+        (w) => w.address == selectedAddress,
+        orElse: () => _wallets.first,
+      );
+    }
+
+    notifyListeners();
   }
 
   /// 전체 초기화

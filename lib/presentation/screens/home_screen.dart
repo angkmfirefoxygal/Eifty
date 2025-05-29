@@ -40,10 +40,34 @@ class _HomeScreenState extends State<HomeScreen> {
             vm.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : wallet == null
-                ? const Center(
-                  child: Text(
-                    '선택된 지갑이 없습니다.',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                ? Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        '아직 지갑이 없습니다.',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/wallet/mnemonic');
+                        },
+                        icon: const Icon(Icons.add),
+                        label: const Text('지갑 생성하러 가기'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 14,
+                          ),
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 )
                 : Column(

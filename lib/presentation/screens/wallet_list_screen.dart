@@ -116,6 +116,7 @@ class WalletListScreen extends StatelessWidget {
       context: context,
       builder:
           (_) => AlertDialog(
+            backgroundColor: Colors.white,
             title: const Text('지갑 삭제'),
             content: Text('"${wallet.name}" 지갑을 삭제하시겠습니까?'),
             actions: [
@@ -127,6 +128,13 @@ class WalletListScreen extends StatelessWidget {
                 onPressed: () async {
                   Navigator.pop(context);
                   await vm.deleteWallet(wallet.address);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('"${wallet.name}" 지갑이 삭제되었습니다.'),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
                 },
                 child: const Text('삭제'),
               ),
