@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eifty/viewmodels/transaction_viewmodel.dart';
-import 'package:eifty/presentation/qr/qr_scan_screen.dart';
+import 'package:eifty/presentation/screens/qr/qr_scan_screen.dart';
 
 class SelectRecipientScreen extends StatefulWidget {
   const SelectRecipientScreen({super.key});

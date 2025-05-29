@@ -140,6 +140,7 @@ class _WalletMnemonicConfirmScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('니모닉 확인'),
         leading: IconButton(
@@ -160,14 +161,13 @@ class _WalletMnemonicConfirmScreenState
                       TextButton(
                         onPressed: () {
                           final vm = context.read<WalletViewModel>();
-                          vm.discardTempWallet(); // 생성 중인 지갑 정보 삭제
-
-                          Navigator.pop(context); // 다이얼로그 닫기
+                          vm.discardTempWallet();
+                          Navigator.pop(context);
                           Navigator.pushNamedAndRemoveUntil(
                             context,
                             '/',
                             (route) => false,
-                          ); // 홈으로 이동
+                          );
                         },
                         child: const Text('나가기'),
                       ),
@@ -179,50 +179,55 @@ class _WalletMnemonicConfirmScreenState
         elevation: 0,
         forceMaterialTransparency: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 15),
-            const Text(
-              '니모닉을 순서대로 입력해 주세요',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              '입력한 단어가 정확하지 않으면\n지갑 생성을 완료할 수 없습니다.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: List.generate(6, (i) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [_buildWordInput(i), _buildWordInput(i + 6)],
-                  );
-                }),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 15),
+              const Text(
+                '니모닉을 순서대로 입력해 주세요',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-            ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _validateAll,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(48),
-                  ),
-                  child: const Text('확인'),
+              const SizedBox(height: 12),
+              const Text(
+                '입력한 단어가 정확하지 않으면\n지갑 생성을 완료할 수 없습니다.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  children: List.generate(6, (i) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [_buildWordInput(i), _buildWordInput(i + 6)],
+                    );
+                  }),
+                ),
+              ),
+              const SizedBox(height: 40), // Spacer 대체
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _validateAll,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                    child: const Text('확인'),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
