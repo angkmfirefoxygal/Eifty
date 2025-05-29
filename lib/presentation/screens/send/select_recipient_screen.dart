@@ -13,7 +13,10 @@ class SelectRecipientScreen extends StatefulWidget {
 class _SelectRecipientScreenState extends State<SelectRecipientScreen> {
   final TextEditingController _addressController = TextEditingController();
   final List<Map<String, String>> _recentAddresses = [
-    {'name': 'Account 2', 'address': '0x123bh45jh678907'},
+    {
+      'name': 'Account 2',
+      'address': '0x156f1aF64D4ca0Bc7cA5d903aAfB537A6763D88e',
+    },
     {'name': 'Account 3', 'address': '0x23d554677d9809'},
     {'name': 'Account 4', 'address': '0xcd065095034gflv4'},
   ];

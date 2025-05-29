@@ -100,8 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           try {
                             final txHash = await service.sendToken(
                               recipientAddress:
-                                  '0x3B27705E5A29a380331D99794473C3F29481f686', // 친구 테스트 주소
-                              amount: 0.001,
+                                  '0x156f1aF64D4ca0Bc7cA5d903aAfB537A6763D88e', // 친구 테스트 주소
+                              amount: 0.00001,
                               tokenSymbol: 'MATIC',
                             );
 
