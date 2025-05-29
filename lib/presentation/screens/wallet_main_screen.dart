@@ -12,47 +12,51 @@ class WalletMainScreen extends StatefulWidget {
 }
 
 class _WalletMainScreenState extends State<WalletMainScreen> {
+  String selectedNetwork = 'POL';
   double ethBalance = 0.0;
+  double polBalance = 0.0;
   double ethPrice = 0.0;
+  double polPrice = 0.0;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   loadWalletBalance();
-  //   fetchETHPrice();
-  // }
+  final Color iconColor = const Color(0xFF667C8A);
 
-  // Future<void> loadWalletBalance() async {
-  //   final address = await SecureStorageService.getSelectedWalletAddress();
-  //   if (address == null) return;
-
-  //   final balance = await TransactionService.getEthBalance(address);
-  //   setState(() {
-  //     ethBalance = balance;
-  //   });
-  // }
-
-  Future<void> fetchETHPrice() async {
-    final url = Uri.parse(
-      'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd',
-    );
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        setState(() {
-          ethPrice = data['ethereum']['usd'] ?? 0.0;
-        });
-      } else {
-        print('가격 로딩 실패: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('오류 발생: $e');
-    }
+  @override
+  void initState() {
+    super.initState();
+    loadBalances();
   }
 
+  Future<void> loadBalances() async {
+    final address = await SecureStorageService.getSelectedWalletAddress();
+    if (address == null) return;
+
+    ethBalance = await TransactionService.getEthBalance(address);
+    polBalance = await TransactionService.getPolBalance(address);
+    ethPrice = await fetchPrice('ethereum');
+    polPrice = await fetchPrice('matic-network');
+
+    setState(() {});
+  }
+
+  Future<double> fetchPrice(String coinId) async {
+    final url = Uri.parse(
+      'https://api.coingecko.com/api/v3/simple/price?ids=$coinId&vs_currencies=usd',
+    );
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return (data[coinId]['usd'] ?? 0.0) as double;
+    }
+    return 0.0;
+  }
+
+  String get selectedSymbol => selectedNetwork;
+  double get selectedBalance =>
+      selectedNetwork == 'ETH' ? ethBalance : polBalance;
+  double get selectedPrice => selectedNetwork == 'ETH' ? ethPrice : polPrice;
+
   String get formattedPrice =>
-      '\$${(ethBalance * ethPrice).toStringAsFixed(2)}';
+      '\$${(selectedBalance * selectedPrice).toStringAsFixed(2)}';
 
   void _send() {
     Navigator.pushNamed(context, '/send/select-recipient');
@@ -66,24 +70,53 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: iconColor),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text('지갑 메인'),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+      ),
       body: SafeArea(
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const Text(
-              'ETH',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            DropdownButton<String>(
+              value: selectedNetwork,
+              onChanged: (value) {
+                if (value == null) return;
+                setState(() {
+                  selectedNetwork = value;
+                });
+              },
+              items:
+                  ['ETH', 'POL'].map((network) {
+                    return DropdownMenuItem(
+                      value: network,
+                      child: Text(network),
+                    );
+                  }).toList(),
             ),
-            const Text('Ethereum', style: TextStyle(fontSize: 14)),
+            Text(
+              selectedNetwork == 'ETH' ? 'Ethereum' : 'Polygon',
+              style: const TextStyle(fontSize: 14),
+            ),
             const SizedBox(height: 10),
             CircleAvatar(
               radius: 30,
               backgroundColor: Colors.grey.shade300,
-              child: const Icon(Icons.account_balance_wallet_outlined),
+              child: Icon(
+                Icons.account_balance_wallet_outlined,
+                color: iconColor,
+              ),
             ),
             const SizedBox(height: 10),
             Text(
-              '${ethBalance.toStringAsFixed(4)} ETH',
+              '${selectedBalance.toStringAsFixed(4)} $selectedSymbol',
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Text(formattedPrice, style: const TextStyle(fontSize: 16)),
@@ -93,7 +126,7 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
               children: [
                 ElevatedButton.icon(
                   onPressed: _send,
-                  icon: const Icon(Icons.arrow_upward),
+                  icon: Icon(Icons.arrow_upward, color: iconColor),
                   label: const Text('전송'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey.shade200,
@@ -104,7 +137,7 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
                 const SizedBox(width: 20),
                 ElevatedButton.icon(
                   onPressed: _receive,
-                  icon: const Icon(Icons.arrow_downward),
+                  icon: Icon(Icons.arrow_downward, color: iconColor),
                   label: const Text('수신'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey.shade200,

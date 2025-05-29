@@ -58,34 +58,43 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            wallet.name,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/wallet/main');
+                      },
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              wallet.name,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 12),
-                          const Text(
-                            '주소',
-                            style: TextStyle(fontSize: 14, color: Colors.grey),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            wallet.address,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
+                            const SizedBox(height: 12),
+                            const Text(
+                              '주소',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              wallet.address,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     const Spacer(),
@@ -101,8 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             final txHash = await service.sendToken(
                               recipientAddress:
                                   '0x156f1aF64D4ca0Bc7cA5d903aAfB537A6763D88e', // 친구 테스트 주소
-                              amount: 0.00001,
-                              tokenSymbol: 'MATIC',
+                              amount: 0.01,
+                              tokenSymbol: 'POL',
                             );
 
                             if (!context.mounted) return;
