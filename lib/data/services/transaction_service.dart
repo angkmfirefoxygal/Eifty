@@ -48,20 +48,35 @@ class TransactionService {
   }
 
   static Future<double> getEthBalance(String address) async {
-    final httpClient = Client();
-    final ethClient = Web3Client(rpcUrl, httpClient);
+    final ethClient = Web3Client(
+      'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
+      Client(),
+    );
 
     try {
       final ethAddress = EthereumAddress.fromHex(address);
       final balance = await ethClient.getBalance(ethAddress);
-
-      // balance.getValueInUnit returns ETH
       return balance.getValueInUnit(EtherUnit.ether);
     } catch (e) {
-      print('잔액 조회 에러: $e');
+      print('ETH 잔액 조회 에러: $e');
       return 0.0;
     } finally {
       ethClient.dispose();
+    }
+  }
+
+  static Future<double> getPolBalance(String address) async {
+    final polClient = Web3Client('https://polygon-rpc.com', Client());
+
+    try {
+      final ethAddress = EthereumAddress.fromHex(address);
+      final balance = await polClient.getBalance(ethAddress);
+      return balance.getValueInUnit(EtherUnit.ether); // 단위는 ETH와 동일 (wei 기반)
+    } catch (e) {
+      print('POL 잔액 조회 에러: $e');
+      return 0.0;
+    } finally {
+      polClient.dispose();
     }
   }
 }
