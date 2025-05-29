@@ -12,10 +12,7 @@ class WalletMainScreen extends StatefulWidget {
 }
 
 class _WalletMainScreenState extends State<WalletMainScreen> {
-  String selectedNetwork = 'POL';
-  double ethBalance = 0.0;
   double polBalance = 0.0;
-  double ethPrice = 0.0;
   double polPrice = 0.0;
 
   final Color iconColor = const Color(0xFF667C8A);
@@ -30,9 +27,7 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
     final address = await SecureStorageService.getSelectedWalletAddress();
     if (address == null) return;
 
-    ethBalance = await TransactionService.getEthBalance(address);
     polBalance = await TransactionService.getPolBalance(address);
-    ethPrice = await fetchPrice('ethereum');
     polPrice = await fetchPrice('matic-network');
 
     setState(() {});
@@ -50,10 +45,9 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
     return 0.0;
   }
 
-  String get selectedSymbol => selectedNetwork;
-  double get selectedBalance =>
-      selectedNetwork == 'ETH' ? ethBalance : polBalance;
-  double get selectedPrice => selectedNetwork == 'ETH' ? ethPrice : polPrice;
+  String get selectedSymbol => 'POL';
+  double get selectedBalance => polBalance;
+  double get selectedPrice => polPrice;
 
   String get formattedPrice =>
       '\$${(selectedBalance * selectedPrice).toStringAsFixed(2)}';
@@ -85,26 +79,11 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            DropdownButton<String>(
-              value: selectedNetwork,
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() {
-                  selectedNetwork = value;
-                });
-              },
-              items:
-                  ['ETH', 'POL'].map((network) {
-                    return DropdownMenuItem(
-                      value: network,
-                      child: Text(network),
-                    );
-                  }).toList(),
+            const Text(
+              'POL',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text(
-              selectedNetwork == 'ETH' ? 'Ethereum' : 'Polygon',
-              style: const TextStyle(fontSize: 14),
-            ),
+            const Text('Polygon', style: TextStyle(fontSize: 14)),
             const SizedBox(height: 10),
             CircleAvatar(
               radius: 30,

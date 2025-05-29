@@ -57,24 +57,6 @@ class TransactionService {
     }
   }
 
-  static Future<double> getEthBalance(String address) async {
-    final ethClient = Web3Client(
-      'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
-      Client(),
-    );
-
-    try {
-      final ethAddress = EthereumAddress.fromHex(address);
-      final balance = await ethClient.getBalance(ethAddress);
-      return balance.getValueInUnit(EtherUnit.ether);
-    } catch (e) {
-      print('ETH 잔액 조회 에러: $e');
-      return 0.0;
-    } finally {
-      ethClient.dispose();
-    }
-  }
-
   static Future<double> getPolBalance(String address) async {
     final polClient = Web3Client('https://polygon-rpc.com', Client());
 
