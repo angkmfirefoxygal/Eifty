@@ -61,15 +61,15 @@
       <b>수신자 선택</b>
     </td>
     <td align="center">
-      <img src="lib/assets/InputAmountScreen.png" width="200" height="480" alt="이체 금액"/><br/>
+      <img src="lib/assets/InputAmountScreen.png" width="200" height="450" alt="이체 금액"/><br/>
       <b>이체 금액</b>
     </td>
     <td align="center">
-      <img src="lib/assets/ConfirmTransactionScreen.png" width="200" height="480" alt="송금 확인"/><br/>
+      <img src="lib/assets/ConfirmTransactionScreen.png" width="200" height="450" alt="송금 확인"/><br/>
       <b>전송 확인</b>
     </td>
     <td align="center">
-      <img src="lib/assets/ReceiveQrScreen.png" width="200" height="480" alt="QR 수신"/><br/>
+      <img src="lib/assets/ReceiveQrScreen.png" width="200" height="450" alt="QR 수신"/><br/>
       <b>QR 수신</b>
     </td>
   </tr>
@@ -78,19 +78,19 @@
 <table align="center">
   <tr>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/a2b5081d-9764-449a-8b67-2f192050ea63" width="200" height="480" alt="홈"/><br/>
+      <img src="https://github.com/user-attachments/assets/a2b5081d-9764-449a-8b67-2f192050ea63" width="200" height="450" alt="홈"/><br/>
       <b>홈 화면</b>
     </td>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/2f13a4db-f994-4521-a8b4-4b49c60b10f0" width="200" height="480" alt="지갑 목록"/><br/>
+      <img src="https://github.com/user-attachments/assets/2f13a4db-f994-4521-a8b4-4b49c60b10f0" width="200" height="450" alt="지갑 목록"/><br/>
       <b>지갑 목록 화면</b>
     </td>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/b4da4b98-254a-4da2-86eb-64dcd8dcfc0d" width="200" height="480" alt="니모닉 확인"/><br/>
+      <img src="https://github.com/user-attachments/assets/b4da4b98-254a-4da2-86eb-64dcd8dcfc0d" width="200" height="450" alt="니모닉 확인"/><br/>
       <b>니모닉 확인 화면</b>
     </td>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/19ca6a22-83d5-40f0-a544-d0f27ac53b7b" width="200" height="480" alt="지갑 생성 완료"/><br/>
+      <img src="https://github.com/user-attachments/assets/19ca6a22-83d5-40f0-a544-d0f27ac53b7b" width="200" height="450" alt="지갑 생성 완료"/><br/>
       <b>지갑 생성 완료 화면</b>
     </td>
   </tr>
