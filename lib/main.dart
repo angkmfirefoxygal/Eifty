@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:eifty/app/app.dart';
 import 'package:eifty/viewmodels/wallet_viewmodel.dart';
 import 'package:eifty/viewmodels/transaction_viewmodel.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(); // 💡 비동기로 .env 불러옴
   runApp(
     MultiProvider(
       providers: [

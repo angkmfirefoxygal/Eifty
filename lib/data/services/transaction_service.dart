@@ -1,49 +1,63 @@
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // 📦 dotenv 사용
 import 'dart:math';
 
 class TransactionService {
-  static final String rpcUrl = 'https://polygon-rpc.com'; // 또는 Infura/Alchemy
-  static final String privateKey = '<당신의 프라이빗 키>'; // 실제론 secure하게 관리할 것
-  static final int chainId = 137; // Polygon Mainnet
+  late final Web3Client _ethClient;
+  late final EthPrivateKey _credentials;
+  late final EthereumAddress _senderAddress;
+  late final int _chainId; // ✅ 클래스 멤버로 정의
 
-  static Future<String> sendToken({
+  // ✅ 비동기 초기화
+  Future<void> init() async {
+    final rpcUrl = dotenv.env['RPC_URL'];
+    final privateKey = dotenv.env['PRIVATE_KEY'];
+    final chainId = int.parse(dotenv.env['CHAIN_ID']!);
+
+    if (rpcUrl == null || privateKey == null) {
+      throw Exception('❗️환경변수(RPC_URL 또는 PRIVATE_KEY)가 설정되지 않았습니다.');
+    }
+
+    final httpClient = Client();
+    _ethClient = Web3Client(rpcUrl, httpClient);
+    _credentials = EthPrivateKey.fromHex(privateKey);
+    _senderAddress = await _credentials.extractAddress();
+    _chainId = chainId; // ✅ 멤버에 저장
+  }
+
+  Future<String> sendToken({
     required String recipientAddress,
     required double amount,
-    required String tokenSymbol,
+    required String tokenSymbol, // ✨ 향후 확장 대비 포함
   }) async {
-    final httpClient = Client();
-    final ethClient = Web3Client(rpcUrl, httpClient);
-
     try {
-      // 🔑 지갑 생성
-      final credentials = EthPrivateKey.fromHex(privateKey);
-      final senderAddress = await credentials.extractAddress();
-
-      // 🎯 이더 단위 변환
-      final valueInWei = BigInt.from(amount * pow(10, 18)); // 1 POL = 10^18 wei
+      final valueInWei = BigInt.from(
+        amount * pow(10, 18),
+      ); // 1 MATIC = 10^18 wei
 
       final transaction = Transaction(
-        from: senderAddress,
+        from: _senderAddress,
         to: EthereumAddress.fromHex(recipientAddress),
         value: EtherAmount.inWei(valueInWei),
-        gasPrice: await ethClient.getGasPrice(),
+        gasPrice: await _ethClient.getGasPrice(),
         maxGas: 21000,
       );
 
-      // 🚀 트랜잭션 전송
-      final txHash = await ethClient.sendTransaction(
-        credentials,
+      final txHash = await _ethClient.sendTransaction(
+        _credentials,
         transaction,
-        chainId: chainId,
+        chainId: _chainId,
       );
 
       return txHash;
     } catch (e) {
-      print('트랜잭션 에러: $e');
+      print('🚨 트랜잭션 에러: $e');
       rethrow;
-    } finally {
-      ethClient.dispose();
     }
+  }
+
+  void dispose() {
+    _ethClient.dispose();
   }
 }
