@@ -2,8 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eifty/viewmodels/transaction_viewmodel.dart';
 
-class ConfirmTransactionScreen extends StatelessWidget {
+class ConfirmTransactionScreen extends StatefulWidget {
   const ConfirmTransactionScreen({super.key});
+
+  @override
+  State<ConfirmTransactionScreen> createState() =>
+      _ConfirmTransactionScreenState();
+}
+
+class _ConfirmTransactionScreenState extends State<ConfirmTransactionScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // 수수료는 화면이 처음 로드될 때 한 번만 요청
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final txVM = context.read<TransactionViewModel>();
+      txVM.fetchFeeEstimate();
+    });
+  }
 
   Future<void> _submitTransaction(BuildContext context) async {
     final txVM = context.read<TransactionViewModel>();
@@ -15,7 +31,7 @@ class ConfirmTransactionScreen extends StatelessWidget {
     if (success) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('✅ 전송 성공!')));
+      ).showSnackBar(const SnackBar(content: Text('✅ 전송 성공!')));
       Navigator.popUntil(context, ModalRoute.withName('/'));
     } else {
       ScaffoldMessenger.of(
@@ -54,10 +70,15 @@ class ConfirmTransactionScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            Text(
-              '수수료: ${txVM.fee} ${txVM.selectedToken}',
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
-            ),
+            txVM.isLoading
+                ? const Text(
+                  '수수료 계산 중...',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                )
+                : Text(
+                  '수수료: ${txVM.fee} ${txVM.selectedToken}',
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
             const SizedBox(height: 40),
             SizedBox(
               width: double.infinity,
