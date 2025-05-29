@@ -39,10 +39,12 @@
 #### 2. **송금 흐름 (3단계)**
 
 1. **수신자 선택**
+
    - 최근 보낸 주소 리스트 표시
    - QR 코드 스캔 or 직접 입력
 
 2. **이체 금액 입력**
+
    - 지원 토큰(예: `POL`, `ETH`) 중 선택
    - 전송 수수료 표시
 
@@ -100,15 +102,15 @@
 
 ### 🧱 사용된 기술 스택
 
-| 항목 | 기술 |
-|------|------|
-| 모바일 프레임워크 | Flutter |
-| 상태관리 | Provider (MVVM 패턴 적용) |
-| 니모닉 생성 | `bip39` |
-| 영구 저장 | `flutter_secure_storage`, `shared_preferences` |
-| QR 코드 생성/스캔 | `qr_flutter`, `mobile_scanner` |
-| 블록체인 인터랙션 | `web3dart`, Polygon Amoy Testnet |
-| 비동기 트랜잭션 처리 | `async/await` + `sendTransaction()` |
+| 항목                 | 기술                                           |
+| -------------------- | ---------------------------------------------- |
+| 모바일 프레임워크    | Flutter                                        |
+| 상태관리             | Provider (MVVM 패턴 적용)                      |
+| 니모닉 생성          | `bip39`                                        |
+| 영구 저장            | `flutter_secure_storage`, `shared_preferences` |
+| QR 코드 생성/스캔    | `qr_flutter`, `mobile_scanner`                 |
+| 블록체인 인터랙션    | `web3dart`, Polygon Amoy Testnet               |
+| 비동기 트랜잭션 처리 | `async/await` + `sendTransaction()`            |
 
 ---
 
@@ -125,6 +127,7 @@
 ```bash
 lib/
 ├── core/
+│   ├── config.dart
 │   ├── constants.dart
 │   └── utilities.dart
 │
@@ -140,27 +143,27 @@ lib/
 │   └── wallet_model.dart
 │
 ├── presentation/
-│   ├── qr/
-│   │   └── qr_scan_screen.dart
 │   ├── screens/
+│   │   ├── create_wallet/
+│   │   │   ├── wallet_created_screen.dart
+│   │   │   ├── wallet_mnemonic_confirm_screen.dart
+│   │   │   ├── wallet_mnemonic_screen.dart
+│   │   │   └── wallet_recovery_screen.dart
+│   │   ├── qr/
+│   │   │   └── qr_scan_screen.dart
 │   │   ├── send/
 │   │   │   ├── select_recipient_screen.dart
 │   │   │   ├── input_amount_screen.dart
 │   │   │   └── confirm_transaction_screen.dart
 │   │   ├── receive/
-│   │   │   └── ... (추가 예정)
+│   │   │   └── receive_qr_screen.dart
 │   │   ├── home_screen.dart
-│   │   ├── wallet_created_screen.dart
+│   │   ├── wallet_main_screen.dart
 │   │   └── wallet_list_screen.dart
-│
-├── view/
-│   └── wallet/
-│       ├── wallet_mnemonic_screen.dart
-│       ├── wallet_mnemonic_confirm_screen.dart
-│       └── wallet_recovery_screen.dart
-│
+│   │
 ├── viewmodels/
 │   ├── wallet_viewmodel.dart
 │   └── transaction_viewmodel.dart
 │
 └── main.dart
+```
