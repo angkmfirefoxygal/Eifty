@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: const Text('🚀 테스트 전송'),
                       ),
                     ),
-
+                    const Spacer(),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(

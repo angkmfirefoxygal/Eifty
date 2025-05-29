@@ -15,22 +15,22 @@ class _WalletMainScreenState extends State<WalletMainScreen> {
   double ethBalance = 0.0;
   double ethPrice = 0.0;
 
-  @override
-  void initState() {
-    super.initState();
-    loadWalletBalance();
-    fetchETHPrice();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   loadWalletBalance();
+  //   fetchETHPrice();
+  // }
 
-  Future<void> loadWalletBalance() async {
-    final address = await SecureStorageService.getSelectedWalletAddress();
-    if (address == null) return;
+  // Future<void> loadWalletBalance() async {
+  //   final address = await SecureStorageService.getSelectedWalletAddress();
+  //   if (address == null) return;
 
-    final balance = await TransactionService.getEthBalance(address);
-    setState(() {
-      ethBalance = balance;
-    });
-  }
+  //   final balance = await TransactionService.getEthBalance(address);
+  //   setState(() {
+  //     ethBalance = balance;
+  //   });
+  // }
 
   Future<void> fetchETHPrice() async {
     final url = Uri.parse(
