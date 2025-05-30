@@ -1,3 +1,4 @@
+import 'package:eifty/utils/dialog_utils.dart';
 import 'package:eifty/viewmodels/wallet_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 20),
                       ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/wallet/mnemonic');
+                          showWalletNameInputDialog(context);
                         },
                         icon: const Icon(Icons.add, color: Colors.white),
                         label: const Text('지갑 생성하러 가기'),

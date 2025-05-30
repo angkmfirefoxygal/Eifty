@@ -24,8 +24,6 @@ class WalletViewModel extends ChangeNotifier {
     }).toList();
   }
 
-  // 기본 지갑 생성(지갑 하나도 없을 때)
-
   /// 전체 지갑 로드
   Future<void> loadWallets() async {
     _wallets = await SecureStorageService.loadWalletList();
@@ -50,6 +48,16 @@ class WalletViewModel extends ChangeNotifier {
   void setTempWalletName(String name) {
     tempWalletName = name;
     notifyListeners();
+  }
+
+  // 지갑 이름 변경
+  Future<void> renameWallet(String address, String newName) async {
+    final index = _wallets.indexWhere((w) => w.address == address);
+    if (index != -1) {
+      _wallets[index] = _wallets[index].copyWith(name: newName);
+      await SecureStorageService.saveWalletList(_wallets);
+      notifyListeners();
+    }
   }
 
   /// 니모닉 생성 및 반환
