@@ -409,6 +409,9 @@ https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=us
 
 ### 🔐 1. 지갑 보안 고도화
 
+- **자체 로그인 기능 도입**  
+  이메일 및 비밀번호 기반의 자체 로그인 시스템으로 사용자 인증 및 접근 제어 수행
+
 - **Face ID / 지문 인증 연동**  
   지갑 열람 또는 송금 시 생체 인증 절차 도입으로 보안 강화
 
