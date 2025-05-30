@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () {
                           Navigator.pushNamed(context, '/wallet/mnemonic');
                         },
-                        icon: const Icon(Icons.add),
+                        icon: const Icon(Icons.add, color: Colors.white),
                         label: const Text('지갑 생성하러 가기'),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
