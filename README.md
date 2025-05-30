@@ -56,7 +56,7 @@
 
 | 프로필 | 이름 (GitHub) | 주요 담당 기능 | 세부 내용 |
 |--------|----------------|----------------|-----------|
-| ![김문원](https://github.com/angkmfirefoxygal.png) | 김문원 ([angkmfirefoxygal](https://github.com/angkmfirefoxygal)) | **트랜잭션 송/수신 로직 구현** | - 수신자 선택, 금액 입력, 전송 확인 3단계 UI 흐름 설계 및 구현<br>- `web3dart` 기반 Polygon Amoy 테스트넷 트랜잭션 실행 로직 구현 |
+| ![김문원](https://github.com/angkmfirefoxygal.png) | 김문원 ([angkmfirefoxygal](https://github.com/angkmfirefoxygal)) | **트랜잭션 송/수신 로직 및 UI 구현** | - 수신자 선택, 금액 입력, 전송 확인 3단계 UI 흐름 설계 및 구현<br>- `web3dart` 기반 Polygon Amoy 테스트넷 트랜잭션 실행 로직 구현 |
 | ![하고은](https://github.com/hagoeun0119.png) | 하고은 ([hagoeun0119](https://github.com/hagoeun0119)) | **지갑 잔액 조회 및 표시** | - 선택된 지갑 주소의 잔액을 RPC를 통해 실시간으로 조회<br>- CoinGecko API 연동을 통한 자산의 USD 환산 표시 기능 구현 |
 | ![전시원](https://github.com/siiion.png) | 전시원 ([siiion](https://github.com/siiion)) | **지갑 생성 및 복구**, **지갑 리스트 관리**, **트랜잭션 내역 UI 구성** | - 니모닉 기반 지갑 생성/복구 흐름 구현<br>- 생성된 지갑들을 리스트로 관리하는 기능<br>- Polygonscan API를 통해 가져온 트랜잭션 내역 UI 구성 |
 
