@@ -24,8 +24,6 @@ class WalletViewModel extends ChangeNotifier {
     }).toList();
   }
 
-  // 기본 지갑 생성(지갑 하나도 없을 때)
-
   /// 전체 지갑 로드
   Future<void> loadWallets() async {
     _wallets = await SecureStorageService.loadWalletList();
@@ -33,23 +31,7 @@ class WalletViewModel extends ChangeNotifier {
         await SecureStorageService.getSelectedWalletAddress();
 
     if (_wallets.isEmpty) {
-      // 👉 기본 지갑 자동 생성
-      final mnemonic = WalletService.generateMnemonic();
-      final walletData = await WalletService.generateWalletFromMnemonic(
-        mnemonic,
-      );
-
-      final defaultWallet = WalletModel(
-        name: '기본 지갑',
-        address: walletData['address']!,
-        privateKey: walletData['privateKey']!,
-        createdAt: DateTime.now(),
-      );
-
-      _wallets.add(defaultWallet);
-      await SecureStorageService.saveWalletList(_wallets);
-      await SecureStorageService.setSelectedWallet(defaultWallet.address);
-      _selectedWallet = defaultWallet;
+      _selectedWallet = null; // 자동 생성 제거
     } else {
       _selectedWallet = _wallets.firstWhere(
         (w) => w.address == selectedAddress,
@@ -58,20 +40,6 @@ class WalletViewModel extends ChangeNotifier {
     }
 
     notifyListeners();
-    // _wallets = await SecureStorageService.loadWalletList();
-    // final selectedAddress =
-    //     await SecureStorageService.getSelectedWalletAddress();
-
-    // if (_wallets.isEmpty) {
-    //   _selectedWallet = null;
-    // } else {
-    //   _selectedWallet = _wallets.firstWhere(
-    //     (w) => w.address == selectedAddress,
-    //     orElse: () => _wallets.first,
-    //   );
-    // }
-
-    // notifyListeners();
   }
 
   /// 지갑 이름 설정
@@ -80,6 +48,16 @@ class WalletViewModel extends ChangeNotifier {
   void setTempWalletName(String name) {
     tempWalletName = name;
     notifyListeners();
+  }
+
+  // 지갑 이름 변경
+  Future<void> renameWallet(String address, String newName) async {
+    final index = _wallets.indexWhere((w) => w.address == address);
+    if (index != -1) {
+      _wallets[index] = _wallets[index].copyWith(name: newName);
+      await SecureStorageService.saveWalletList(_wallets);
+      notifyListeners();
+    }
   }
 
   /// 니모닉 생성 및 반환

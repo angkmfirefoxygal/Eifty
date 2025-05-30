@@ -1,3 +1,4 @@
+import 'package:eifty/utils/dialog_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eifty/models/wallet_model.dart';
@@ -38,60 +39,97 @@ class WalletListScreen extends StatelessWidget {
                     return GestureDetector(
                       onTap: () => vm.selectWallet(wallet.address),
                       onLongPress: () => _showDeleteDialog(context, vm, wallet),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color:
-                              isSelected ? Colors.grey.shade100 : Colors.white,
-                          border: Border.all(
-                            color:
-                                isSelected
-                                    ? Colors.green
-                                    : Colors.grey.shade300,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              wallet.name,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color:
+                                  isSelected
+                                      ? Colors.grey.shade100
+                                      : Colors.white,
+                              border: Border.all(
+                                color:
+                                    isSelected
+                                        ? Colors.green
+                                        : Colors.grey.shade300,
                               ),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            const SizedBox(height: 6),
-                            Text(
-                              wallet.address,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            if (isSelected)
-                              const Padding(
-                                padding: EdgeInsets.only(top: 8.0),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.check_circle,
-                                      size: 18,
-                                      color: Colors.green,
-                                    ),
-                                    SizedBox(width: 6),
-                                    Text(
-                                      '선택됨',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                  ],
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 24), // 아이콘 공간 확보
+                                Text(
+                                  wallet.name,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                          ],
-                        ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  wallet.address,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                if (isSelected)
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.check_circle,
+                                          size: 18,
+                                          color: Colors.green,
+                                        ),
+                                        SizedBox(width: 6),
+                                        Text(
+                                          '선택됨',
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+
+                          // 아이콘 버튼들
+                          Positioned(
+                            top: 6,
+                            right: 6,
+                            child: Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit, size: 20),
+                                  tooltip: '이름 수정',
+                                  onPressed:
+                                      () => showWalletRenameDialog(
+                                        context,
+                                        wallet,
+                                      ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete, size: 20),
+                                  tooltip: '삭제',
+                                  onPressed:
+                                      () => _showDeleteDialog(
+                                        context,
+                                        vm,
+                                        wallet,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   },
@@ -169,7 +207,7 @@ class WalletListScreen extends StatelessWidget {
                 title: const Text('새 지갑 생성'),
                 onTap: () {
                   Navigator.pop(context);
-                  _showNameInputDialog(context);
+                  showWalletNameInputDialog(context);
                 },
               ),
               ListTile(
@@ -181,40 +219,6 @@ class WalletListScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 16),
-            ],
-          ),
-    );
-  }
-
-  void _showNameInputDialog(BuildContext context) {
-    final TextEditingController nameController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder:
-          (_) => AlertDialog(
-            backgroundColor: Colors.white,
-            title: const Text('지갑 이름 설정'),
-            content: TextField(
-              controller: nameController,
-              decoration: const InputDecoration(hintText: '예: 내 첫 번째 지갑'),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('취소'),
-              ),
-              TextButton(
-                onPressed: () {
-                  final name = nameController.text.trim();
-                  if (name.isNotEmpty) {
-                    context.read<WalletViewModel>().setTempWalletName(name);
-                    Navigator.pop(context);
-                    Navigator.pushNamed(context, '/wallet/mnemonic');
-                  }
-                },
-                child: const Text('확인'),
-              ),
             ],
           ),
     );

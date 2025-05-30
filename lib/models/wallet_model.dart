@@ -24,4 +24,18 @@ class WalletModel {
     privateKey: json['privateKey'] ?? '',
     createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
   );
+
+  WalletModel copyWith({
+    String? name,
+    String? address,
+    String? privateKey,
+    DateTime? createdAt,
+  }) {
+    return WalletModel(
+      name: name ?? this.name,
+      address: address ?? this.address,
+      privateKey: privateKey ?? this.privateKey,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }
