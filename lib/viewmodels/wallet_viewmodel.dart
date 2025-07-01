@@ -14,7 +14,15 @@ class WalletViewModel extends ChangeNotifier {
   WalletModel? get selectedWallet => _selectedWallet;
   String? get mnemonic => _generatedMnemonic;
 
-  // 기본 지갑 생성(지갑 하나도 없을 때)
+  // 중복 주소 제거된 지갑 목록 반환
+  List<WalletModel> get uniqueWallets {
+    final seen = <String>{};
+    return _wallets.where((wallet) {
+      final isNew = !seen.contains(wallet.address);
+      seen.add(wallet.address);
+      return isNew;
+    }).toList();
+  }
 
   /// 전체 지갑 로드
   Future<void> loadWallets() async {
@@ -23,23 +31,7 @@ class WalletViewModel extends ChangeNotifier {
         await SecureStorageService.getSelectedWalletAddress();
 
     if (_wallets.isEmpty) {
-      // 👉 기본 지갑 자동 생성
-      final mnemonic = WalletService.generateMnemonic();
-      final walletData = await WalletService.generateWalletFromMnemonic(
-        mnemonic,
-      );
-
-      final defaultWallet = WalletModel(
-        name: '기본 지갑',
-        address: walletData['address']!,
-        privateKey: walletData['privateKey']!,
-        createdAt: DateTime.now(),
-      );
-
-      _wallets.add(defaultWallet);
-      await SecureStorageService.saveWalletList(_wallets);
-      await SecureStorageService.setSelectedWallet(defaultWallet.address);
-      _selectedWallet = defaultWallet;
+      _selectedWallet = null; // 자동 생성 제거
     } else {
       _selectedWallet = _wallets.firstWhere(
         (w) => w.address == selectedAddress,
@@ -48,20 +40,6 @@ class WalletViewModel extends ChangeNotifier {
     }
 
     notifyListeners();
-    // _wallets = await SecureStorageService.loadWalletList();
-    // final selectedAddress =
-    //     await SecureStorageService.getSelectedWalletAddress();
-
-    // if (_wallets.isEmpty) {
-    //   _selectedWallet = null;
-    // } else {
-    //   _selectedWallet = _wallets.firstWhere(
-    //     (w) => w.address == selectedAddress,
-    //     orElse: () => _wallets.first,
-    //   );
-    // }
-
-    // notifyListeners();
   }
 
   /// 지갑 이름 설정
@@ -70,6 +48,16 @@ class WalletViewModel extends ChangeNotifier {
   void setTempWalletName(String name) {
     tempWalletName = name;
     notifyListeners();
+  }
+
+  // 지갑 이름 변경
+  Future<void> renameWallet(String address, String newName) async {
+    final index = _wallets.indexWhere((w) => w.address == address);
+    if (index != -1) {
+      _wallets[index] = _wallets[index].copyWith(name: newName);
+      await SecureStorageService.saveWalletList(_wallets);
+      notifyListeners();
+    }
   }
 
   /// 니모닉 생성 및 반환
@@ -98,6 +86,21 @@ class WalletViewModel extends ChangeNotifier {
       final walletData = await WalletService.generateWalletFromMnemonic(
         mnemonic,
       );
+
+      // ✅ 중복 지갑 주소 확인
+      final exists = _wallets.any((w) => w.address == walletData['address']);
+      if (exists) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('이미 존재하는 지갑 주소입니다.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        isLoading = false;
+        notifyListeners();
+        return;
+      }
+
       final newWallet = WalletModel(
         name: tempWalletName ?? '지갑 ${_wallets.length + 1}',
         address: walletData['address']!,
@@ -117,7 +120,10 @@ class WalletViewModel extends ChangeNotifier {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('지갑 생성 실패: $e'), duration: Duration(seconds: 1)),
+        SnackBar(
+          content: Text('지갑 생성 실패: $e'),
+          duration: const Duration(seconds: 2),
+        ),
       );
     } finally {
       isLoading = false;
@@ -134,7 +140,7 @@ class WalletViewModel extends ChangeNotifier {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('12개의 니모닉 단어를 정확히 입력해주세요.'),
-          duration: Duration(seconds: 1),
+          duration: Duration(seconds: 2),
         ),
       );
       return;
@@ -144,6 +150,19 @@ class WalletViewModel extends ChangeNotifier {
       final walletData = await WalletService.generateWalletFromMnemonic(
         mnemonicInput.trim(),
       );
+
+      // ✅ 중복 지갑 주소 확인
+      final exists = _wallets.any((w) => w.address == walletData['address']);
+      if (exists) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('이미 존재하는 지갑 주소입니다.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        return;
+      }
+
       final newWallet = WalletModel(
         name: '복구 지갑 ${_wallets.length + 1}',
         address: walletData['address']!,
@@ -163,7 +182,10 @@ class WalletViewModel extends ChangeNotifier {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('복구 실패: $e'), duration: Duration(seconds: 1)),
+        SnackBar(
+          content: Text('복구 실패: $e'),
+          duration: const Duration(seconds: 2),
+        ),
       );
     }
   }

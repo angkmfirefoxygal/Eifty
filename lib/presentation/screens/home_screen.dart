@@ -1,3 +1,4 @@
+import 'package:eifty/utils/dialog_utils.dart';
 import 'package:eifty/viewmodels/wallet_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +34,14 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('내 지갑 홈'),
         centerTitle: true,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_balance_wallet),
+            onPressed: () {
+              Navigator.pushNamed(context, '/wallet/list');
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(30),
@@ -51,9 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 20),
                       ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/wallet/mnemonic');
+                          showWalletNameInputDialog(context);
                         },
-                        icon: const Icon(Icons.add),
+                        icon: const Icon(Icons.add, color: Colors.white),
                         label: const Text('지갑 생성하러 가기'),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
@@ -81,6 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 24),
+
+                    /// 지갑 카드
                     InkWell(
                       onTap: () {
                         Navigator.pushNamed(context, '/wallet/main');
@@ -116,72 +127,70 @@ class _HomeScreenState extends State<HomeScreen> {
                               wallet.address,
                               style: const TextStyle(fontSize: 14),
                             ),
+
+                            const SizedBox(height: 24),
+
+                            /// 보내기 / 받기 버튼
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/send/select-recipient',
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.send,
+                                      color: Colors.white,
+                                    ),
+                                    label: const Text('보내기'),
+                                    style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
+                                      backgroundColor: Colors.black,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/receive/qr',
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.qr_code,
+                                      color: Colors.white,
+                                    ),
+                                    label: const Text('받기'),
+                                    style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
+                                      backgroundColor: Colors.black,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
                     ),
-                    const Spacer(),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/wallet/list');
-                        },
-                        icon: const Icon(Icons.manage_accounts),
-                        label: const Text('지갑 변경 / 관리'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ),
                     const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/send/select-recipient',
-                              );
-                            },
-                            icon: const Icon(Icons.send),
-                            label: const Text('보내기'),
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              backgroundColor: Colors.blueGrey,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/receive/qr');
-                            },
-                            icon: const Icon(Icons.qr_code),
-                            label: const Text('받기'),
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              backgroundColor: Colors.blueGrey,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
       ),
